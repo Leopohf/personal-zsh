@@ -49,23 +49,40 @@ if [ ! -d "$PLUGINS_DIR/zsh-syntax-highlighting" ]; then
     git clone https://github.com/zsh-users/zsh-syntax-highlighting.git "$PLUGINS_DIR/zsh-syntax-highlighting"
 fi
 
-# 3. Link Theme
+# 3. Install SDKMAN! if not present
+if [ ! -d "$HOME/.sdkman" ]; then
+    echo "📦 Installing SDKMAN!..."
+    curl -s "https://get.sdkman.io" | bash
+else
+    echo "✅ SDKMAN! is already installed."
+fi
+
+# Configure SDKMAN!
+if [ -d "$HOME/.sdkman" ]; then
+    echo "⚙️  Configuring SDKMAN! (auto_env)..."
+    # Ensure sdkman_auto_env=true
+    if [ -f "$HOME/.sdkman/etc/config" ]; then
+        sed -i 's/sdkman_auto_env=false/sdkman_auto_env=true/g' "$HOME/.sdkman/etc/config"
+    fi
+fi
+
+# 4. Link Theme
 echo "🎨 Linking theme..."
 mkdir -p "$ZSH_CUSTOM/themes"
 ln -sf "$REPO_DIR/themes/leonardo.zsh-theme" "$ZSH_CUSTOM/themes/leonardo.zsh-theme"
 
-# 4. Link Modular Configs
+# 5. Link Modular Configs
 echo "⚙️  Linking modular configurations..."
 mkdir -p "$CONFIG_DEST"
 for file in "$REPO_DIR/config/"*.zsh; do
     ln -sf "$file" "$CONFIG_DEST/$(basename "$file")"
 done
 
-# 5. Create OS-specific config (dynamic)
+# 6. Create OS-specific config (dynamic)
 echo "💻 Generating OS-specific configuration..."
 echo "export OS_ICON='$OS_ICON'" > "$CONFIG_DEST/os_icon.zsh"
 
-# 6. Link .zshrc
+# 7. Link .zshrc
 echo "📝 Linking .zshrc template..."
 if [ -f "$HOME/.zshrc" ]; then
     mv "$HOME/.zshrc" "$HOME/.zshrc.bak"
