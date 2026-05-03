@@ -1,0 +1,33 @@
+# Path to your Oh My Zsh installation.
+export ZSH="$HOME/.oh-my-zsh"
+
+# Set name of the theme to load
+# We point to the custom theme in the repo (once installed)
+ZSH_THEME="leonardo"
+
+# Which plugins would you like to load?
+plugins=(
+  git 
+  gh 
+  wd 
+  fnm 
+  sdk 
+  docker 
+  aws 
+  azure 
+  zsh-autosuggestions 
+  zsh-syntax-highlighting 
+  history
+)
+
+source $ZSH/oh-my-zsh.sh
+
+# Load modular configuration files
+if [ -d "$HOME/.zsh_config" ]; then
+  for config_file in "$HOME"/.zsh_config/*.zsh; do
+    [ -f "$config_file" ] && source "$config_file"
+  done
+fi
+
+# User specific configuration (if any remains)
+[[ -f ~/.zshrc.local ]] && source ~/.zshrc.local
