@@ -10,3 +10,4 @@ This file provides Gemini-specific guidance. For general project rules, architec
 - **Tooling**: Prioritize the use of `grep_search` to find modular configurations in `config/` before suggesting changes.
 - **Verification**: When testing shell script changes, use `run_shell_command` with `zsh -n <file>` to check for syntax errors.
 - **Context**: Remember that `zshrc.template` is the source of truth for the linked `~/.zshrc`.
+- **Documentation Mandate**: As per `AGENTS.md`, always update `README.md` and `AGENTS.md` after any functional change. This is a high-priority task.
