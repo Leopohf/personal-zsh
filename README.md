@@ -3,10 +3,12 @@
 This repository contains a portable, modular Zsh configuration based on **Oh My Zsh** and the **Powerlevel10k**-inspired custom theme `leonardo`.
 
 ## Features
-- **Modular Structure**: Configuration is split into specialized files (`aliases`, `brew`, `fnm`, `bun`, `sdkman`, `docker`, `cloud`, `history`, `zsh-plugins`, `ng`, `exports`).
+- **Modular Structure**: Configuration is split into specialized subdirectories for better organization.
+    - **Core**: OS detection, environment exports, and essential system tweaks.
+    - **Plugins**: Aliases, tool-specific configs (Docker, Node, Java), and utility functions.
 - **Rich Plugin Support**: Pre-configured for Git, Docker, AWS, Azure, and more.
 - **Improved Shell Experience**: Advanced history management and optimized syntax highlighting/autosuggestions.
-- **Custom Theme**: `leonardo.zsh-theme` (Customized robbyrussell with Git and Node.js info).
+- **Custom Theme**: `leonardo.zsh-theme` (Customized robbyrussell with dynamic OS icons).
 - **Auto-Installation**: A script to set up everything on a new machine.
 - **Java Management**: Integrated [SDKMAN!](https://sdkman.io/) with automatic version switching.
 
@@ -45,7 +47,9 @@ This configuration includes a dedicated module for managing Java versions via SD
 
 ## Structure
 - `zshrc.template`: The main entry point copied to `~/.zshrc`.
-- `config/`: Modular `.zsh` files copied to `~/.zsh_config/` and sourced automatically.
+- `config/`: 
+    - `core/`: Base system configurations (OS detection, history, aliases).
+    - `plugins/`: Tool-specific and functional configurations (Brew, Docker, SDKMAN, etc.).
 - `themes/`: Custom Zsh themes copied to Oh My Zsh custom themes folder.
 - `install.sh`: Setup script for dependencies and copying configuration.
 

@@ -76,8 +76,8 @@ cp "$REPO_DIR/themes/leonardo.zsh-theme" "$ZSH_CUSTOM/themes/leonardo.zsh-theme"
 # 6. Copy Modular Configs
 echo "⚙️  Copying modular configurations..."
 mkdir -p "$CONFIG_DEST"
-for file in "$REPO_DIR/config/"*.zsh; do
-    cp "$file" "$CONFIG_DEST/$(basename "$file")"
+for file in "$REPO_DIR/config/core/"*.zsh "$REPO_DIR/config/plugins/"*.zsh; do
+    [ -f "$file" ] && cp "$file" "$CONFIG_DEST/$(basename "$file")"
 done
 
 # 7. Copy .zshrc
