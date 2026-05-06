@@ -3,13 +3,11 @@
 This repository contains a portable, modular Zsh configuration based on **Oh My Zsh** and the **Powerlevel10k**-inspired custom theme `leonardo`.
 
 ## Features
-- **Modular Structure**: Configuration is split into specialized subdirectories for better organization.
-    - **Core**: OS detection, environment exports, and essential system tweaks.
-    - **Plugins**: Aliases, tool-specific configs (Docker, Node, Java), and utility functions.
-- **Rich Plugin Support**: Pre-configured for Git, Docker, AWS, Azure, and more.
-- **Improved Shell Experience**: Advanced history management and optimized syntax highlighting/autosuggestions.
+- **Selective Installation**: Choose exactly which tools and plugins to install (Git, Node, Docker, Java, Cloud, etc.) via an interactive menu.
+- **Homebrew Integration**: Automatically installs missing CLI tools using Homebrew for a seamless setup.
+- **Modular Structure**: Configuration is split into specialized subdirectories. Only the configurations for selected features are deployed.
+- **Dynamic Plugin Management**: Automatically generates the Oh My Zsh plugin list based on your preferences.
 - **Custom Theme**: `leonardo.zsh-theme` (Customized robbyrussell with dynamic OS icons).
-- **Auto-Installation**: A script to set up everything on a new machine.
 - **Java Management**: Integrated [SDKMAN!](https://sdkman.io/) with automatic version switching.
 
 ## Java & SDKMAN!
@@ -39,11 +37,24 @@ This configuration includes a dedicated module for managing Java versions via SD
    chmod +x install.sh
    ./install.sh
    ```
+   *The script will ask which features to enable and save your preferences in `.zsh_plugins.env`.*
 
 3. Restart your terminal or run:
    ```bash
    source ~/.zshrc
    ```
+
+## Configuration Preferences
+
+Your selected features are stored in `.zsh_plugins.env`. You can manually edit this file to enable or disable features and then re-run `./install.sh`.
+
+Example `.zsh_plugins.env`:
+```bash
+ENABLE_GIT=true
+ENABLE_NODE=true
+ENABLE_DOCKER=false
+...
+```
 
 ## Structure
 - `zshrc.template`: The main entry point copied to `~/.zshrc`.

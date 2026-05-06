@@ -16,25 +16,17 @@ This file provides core context and guidelines for AI agents (Gemini, Claude, et
 
 ### Installation
 - **Entry point**: `install.sh`.
-- **Logic**: Detects OS, installs dependencies, copies config files to `~/.zsh_config/`, and manages `.zshrc` backups.
+- **Logic**: Detects OS, asks for feature selection (Git, Node, Docker, etc.), installs missing dependencies via **Homebrew**, and persists preferences in `.zsh_plugins.env`.
+- **Hybrid Mode**: If `.zsh_plugins.env` exists, it uses those settings; otherwise, it asks interactively.
 
 ### Modular Configuration
-- **Structure**: The `config/` directory is organized into subdirectories for better management:
-    - **`config/core/`**: Essential system and environment configurations.
-        - `00-os.zsh`: Centralized OS detection and icon definition.
-        - `macos.zsh`: macOS-specific technical adjustments.
-    - **`config/plugins/`**: Functional modules and tool-specific configurations.
-        - `aliases.zsh`: General purpose aliases.
-        - `exports.zsh`: General environment variables.
-        - `extract.zsh`: Universal extraction function.
-        - `history.zsh`: Zsh history optimization.
-        - `brew.zsh`: Homebrew setup.
-        - `fnm.zsh`, `bun.zsh`, `sdkman.zsh`, `docker.zsh`, `cloud.zsh`, `ng.zsh`, `wd.zsh`: Tool-specific configs.
-        - `zsh-plugins.zsh`: Autosuggestions and Syntax Highlighting config.
-- **Deployment**: `install.sh` copies all files from both subdirectories to `~/.zsh_config/` in a **flat structure**.
-- The `zshrc.template` automatically sources everything in `~/.zsh_config/*.zsh`.
-- **Rule**: Never modify `~/.zshrc` directly for permanent changes; add/edit files in the appropriate `config/` subdirectory.
-- **Rule**: Each plugin, tool, or logical set of configurations **MUST** have its own dedicated `.zsh` file in the `config/plugins/` or `config/core/` directory.
+- **Structure**: The `config/` directory is organized into subdirectories:
+    - **`config/core/`**: Essential system configurations (always installed).
+    - **`config/plugins/`**: Functional modules.
+- **Selective Deployment**: `install.sh` copies files to `~/.zsh_config/` **selectively** based on the enabled features in `.zsh_plugins.env`.
+- **Dynamic Plugins**: `zshrc.template` contains a `_DYNAMIC_PLUGINS_` placeholder that is replaced during installation with the list of Oh My Zsh plugins corresponding to the selected features.
+- **Rule**: Never modify `~/.zshrc` directly; add/edit files in `config/`.
+- **Rule**: Each tool or logical set **MUST** have its own `.zsh` file.
 
 ## Development Conventions
 

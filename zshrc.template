@@ -70,22 +70,7 @@ ZSH_THEME="leonardo"
 # Custom plugins may be added to $ZSH_CUSTOM/plugins/
 # Example format: plugins=(rails git textmate ruby lighthouse)
 # Add wisely, as too many plugins slow down shell startup.
-plugins=(
-  git 
-  gh 
-  wd 
-  fnm 
-  sdk 
-  docker 
-  mvn
-  aws 
-  azure 
-  zsh-autosuggestions 
-  history
-  golang
-  ng
-  zsh-syntax-highlighting
-)
+plugins=(_DYNAMIC_PLUGINS_)
 
 source $ZSH/oh-my-zsh.sh
 
