@@ -3,7 +3,7 @@
 This repository contains a portable, modular Zsh configuration based on **Oh My Zsh** and the **Powerlevel10k**-inspired custom theme `leonardo`.
 
 ## Features
-- **Modular Structure**: Configuration is split into specialized files (`aliases`, `brew`, `fnm`, `bun`, `sdkman`, `docker`, `cloud`, `history`, `zsh-plugins`, `exports`).
+- **Modular Structure**: Configuration is split into specialized files (`aliases`, `brew`, `fnm`, `bun`, `sdkman`, `docker`, `cloud`, `history`, `zsh-plugins`, `ng`, `exports`).
 - **Rich Plugin Support**: Pre-configured for Git, Docker, AWS, Azure, and more.
 - **Improved Shell Experience**: Advanced history management and optimized syntax highlighting/autosuggestions.
 - **Custom Theme**: `leonardo.zsh-theme` (Customized robbyrussell with Git and Node.js info).
@@ -48,4 +48,3 @@ This configuration includes a dedicated module for managing Java versions via SD
 - `config/`: Modular `.zsh` files sourced automatically.
 - `themes/`: Custom Zsh themes.
 - `install.sh`: Setup script for dependencies and symlinks.
-

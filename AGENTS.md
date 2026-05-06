@@ -29,10 +29,12 @@ This file provides core context and guidelines for AI agents (Gemini, Claude, et
     - `cloud.zsh`: AWS & Azure helpers.
     - `history.zsh`: Zsh history optimization.
     - `zsh-plugins.zsh`: Autosuggestions and Syntax Highlighting config.
+    - `ng.zsh`: Angular CLI configuration.
     - `wd.zsh`: Warp Directory config.
     - `exports.zsh`: General environment variables.
 - The `zshrc.template` automatically sources everything in `~/.zsh_config/*.zsh`.
 - **Rule**: Never modify `~/.zshrc` directly for permanent changes; add/edit files in `config/`.
+- **Rule**: Each plugin, tool, or logical set of configurations **MUST** have its own dedicated `.zsh` file in the `config/` directory.
 
 ## Development Conventions
 

@@ -35,21 +35,37 @@ else
 fi
 
 # 2. Install Plugins
-echo "🔌 Installing plugins..."
+echo "🔌 Installing custom plugins..."
 PLUGINS_DIR="$ZSH_CUSTOM/plugins"
 mkdir -p "$PLUGINS_DIR"
 
-# zsh-autosuggestions
-if [ ! -d "$PLUGINS_DIR/zsh-autosuggestions" ]; then
-    git clone https://github.com/zsh-users/zsh-autosuggestions "$PLUGINS_DIR/zsh-autosuggestions"
-fi
+# List of custom plugins to clone
+declare -A CUSTOM_PLUGINS=(
+    ["zsh-autosuggestions"]="https://github.com/zsh-users/zsh-autosuggestions"
+    ["zsh-syntax-highlighting"]="https://github.com/zsh-users/zsh-syntax-highlighting.git"
+)
 
-# zsh-syntax-highlighting
-if [ ! -d "$PLUGINS_DIR/zsh-syntax-highlighting" ]; then
-    git clone https://github.com/zsh-users/zsh-syntax-highlighting.git "$PLUGINS_DIR/zsh-syntax-highlighting"
-fi
+for plugin in "${!CUSTOM_PLUGINS[@]}"; do
+    if [ ! -d "$PLUGINS_DIR/$plugin" ]; then
+        echo "   📥 Cloning $plugin..."
+        git clone "${CUSTOM_PLUGINS[$plugin]}" "$PLUGINS_DIR/$plugin"
+    else
+        echo "   ✅ $plugin already installed."
+    fi
+done
 
-# 3. Install SDKMAN! if not present
+# 3. Check for Required Tools (from plugins list)
+echo "🛠️  Checking for required tools..."
+TOOLS=("gh" "fnm" "docker" "mvn" "aws" "az" "go" "ng" "bun" "pnpm")
+for tool in "${TOOLS[@]}"; do
+    if ! command -v "$tool" &> /dev/null; then
+        echo "   ⚠️  Warning: '$tool' is not installed. Some plugins or configs may not work correctly."
+    else
+        echo "   ✅ '$tool' is installed."
+    fi
+done
+
+# 4. Install SDKMAN! if not present
 if [ ! -d "$HOME/.sdkman" ]; then
     echo "📦 Installing SDKMAN!..."
     curl -s "https://get.sdkman.io" | bash
@@ -66,23 +82,23 @@ if [ -d "$HOME/.sdkman" ]; then
     fi
 fi
 
-# 4. Link Theme
+# 5. Link Theme
 echo "🎨 Linking theme..."
 mkdir -p "$ZSH_CUSTOM/themes"
 ln -sf "$REPO_DIR/themes/leonardo.zsh-theme" "$ZSH_CUSTOM/themes/leonardo.zsh-theme"
 
-# 5. Link Modular Configs
+# 6. Link Modular Configs
 echo "⚙️  Linking modular configurations..."
 mkdir -p "$CONFIG_DEST"
 for file in "$REPO_DIR/config/"*.zsh; do
     ln -sf "$file" "$CONFIG_DEST/$(basename "$file")"
 done
 
-# 6. Create OS-specific config (dynamic)
+# 7. Create OS-specific config (dynamic)
 echo "💻 Generating OS-specific configuration..."
 echo "export OS_ICON='$OS_ICON'" > "$CONFIG_DEST/os_icon.zsh"
 
-# 7. Link .zshrc
+# 8. Link .zshrc
 echo "📝 Linking .zshrc template..."
 if [ -f "$HOME/.zshrc" ]; then
     mv "$HOME/.zshrc" "$HOME/.zshrc.bak"

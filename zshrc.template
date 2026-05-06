@@ -13,11 +13,14 @@ plugins=(
   fnm 
   sdk 
   docker 
+  mvn
   aws 
   azure 
   zsh-autosuggestions 
-  zsh-syntax-highlighting 
   history
+  golang
+  ng
+  zsh-syntax-highlighting
 )
 
 source $ZSH/oh-my-zsh.sh
