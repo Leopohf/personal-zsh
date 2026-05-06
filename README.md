@@ -3,7 +3,7 @@
 This repository contains a portable, modular Zsh configuration based on **Oh My Zsh** and the **Powerlevel10k**-inspired custom theme `leonardo`.
 
 ## Features
-- **Selective Installation**: Choose exactly which tools and plugins to install (Git, Node, Docker, Java, Cloud, etc.) via an interactive menu.
+- **Granular Installation**: Choose exactly which tools and plugins to install (Git, GitHub CLI, Node, pnpm, Bun, Docker, AWS, Azure, etc.) independently via an interactive menu.
 - **Homebrew Integration**: Automatically installs missing CLI tools using Homebrew for a seamless setup.
 - **Modular Structure**: Configuration is split into specialized subdirectories. Only the configurations for selected features are deployed.
 - **Dynamic Plugin Management**: Automatically generates the Oh My Zsh plugin list based on your preferences.
@@ -51,18 +51,22 @@ Your selected features are stored in `.zsh_plugins.env`. You can manually edit t
 Example `.zsh_plugins.env`:
 ```bash
 ENABLE_GIT=true
-ENABLE_NODE=true
+ENABLE_GH=true
+ENABLE_FNM=true
+ENABLE_PNPM=true
 ENABLE_DOCKER=false
+ENABLE_AWS=false
 ...
 ```
 
 ## Structure
 - `zshrc.template`: The main entry point copied to `~/.zshrc`.
+- `install.sh`: Main entry point for the installation process.
+- `scripts/install/`: Modular installation scripts (features, dependencies, configuration).
 - `config/`: 
     - `core/`: Base system configurations (OS detection, history, aliases).
     - `plugins/`: Tool-specific and functional configurations (Brew, Docker, SDKMAN, etc.).
 - `themes/`: Custom Zsh themes copied to Oh My Zsh custom themes folder.
-- `install.sh`: Setup script for dependencies and copying configuration.
 
 ## Nerd Font Symbols
 

@@ -16,8 +16,12 @@ This file provides core context and guidelines for AI agents (Gemini, Claude, et
 
 ### Installation
 - **Entry point**: `install.sh`.
-- **Logic**: Detects OS, asks for feature selection (Git, Node, Docker, etc.), installs missing dependencies via **Homebrew**, and persists preferences in `.zsh_plugins.env`.
-- **Hybrid Mode**: If `.zsh_plugins.env` exists, it uses those settings; otherwise, it asks interactively.
+- **Modular Logic**: The installer is organized into scripts in `scripts/install/`:
+    - `common.sh`: Shared variables and logging.
+    - `features.sh`: Interactive feature selection and preference loading.
+    - `deps.sh`: Installation of Homebrew, OMZ, and custom plugins.
+    - `config.sh`: Deployment of themes, configs, and fonts.
+- **Preferences**: Persists preferences in `.zsh_plugins.env`.
 
 ### Modular Configuration
 - **Structure**: The `config/` directory is organized into subdirectories:

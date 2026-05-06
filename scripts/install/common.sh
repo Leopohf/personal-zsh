@@ -1,0 +1,20 @@
+#!/bin/bash
+
+# Shared environment variables for the installer
+ZSH_CUSTOM="${ZSH_CUSTOM:-$HOME/.oh-my-zsh/custom}"
+CONFIG_DEST="$HOME/.zsh_config"
+PLUGINS_CONF="$REPO_DIR/.zsh_plugins.env"
+
+# Global state
+SELECTED_OMZ_PLUGINS="history"
+SELECTED_CONFIG_FILES="00-os.zsh brew.zsh aliases.zsh exports.zsh history.zsh zsh-plugins.zsh"
+BREW_DEPS=""
+INSTALL_SDKMAN=false
+
+# OS Detection
+source "$REPO_DIR/config/core/00-os.zsh"
+
+log_info() { echo "   ✅ $1"; }
+log_warn() { echo "   ⚠️  $1"; }
+log_err() { echo "   ❌ $1"; }
+log_step() { echo "🚀 $1"; }
