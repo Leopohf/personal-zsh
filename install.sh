@@ -16,6 +16,8 @@ case "$(uname -s)" in
     Linux)
         if grep -q "microsoft" /proc/version 2>/dev/null; then
             OS_ICON="" # Windows icon for WSL
+        elif [ -f /etc/os-release ] && grep -q "Ubuntu" /etc/os-release; then
+            OS_ICON="" # Ubuntu icon
         else
             OS_ICON="" # Generic Linux icon
         fi
@@ -82,29 +84,29 @@ if [ -d "$HOME/.sdkman" ]; then
     fi
 fi
 
-# 5. Link Theme
-echo "🎨 Linking theme..."
+# 5. Copy Theme
+echo "🎨 Copying theme..."
 mkdir -p "$ZSH_CUSTOM/themes"
-ln -sf "$REPO_DIR/themes/leonardo.zsh-theme" "$ZSH_CUSTOM/themes/leonardo.zsh-theme"
+cp "$REPO_DIR/themes/leonardo.zsh-theme" "$ZSH_CUSTOM/themes/leonardo.zsh-theme"
 
-# 6. Link Modular Configs
-echo "⚙️  Linking modular configurations..."
+# 6. Copy Modular Configs
+echo "⚙️  Copying modular configurations..."
 mkdir -p "$CONFIG_DEST"
 for file in "$REPO_DIR/config/"*.zsh; do
-    ln -sf "$file" "$CONFIG_DEST/$(basename "$file")"
+    cp "$file" "$CONFIG_DEST/$(basename "$file")"
 done
 
 # 7. Create OS-specific config (dynamic)
 echo "💻 Generating OS-specific configuration..."
 echo "export OS_ICON='$OS_ICON'" > "$CONFIG_DEST/os_icon.zsh"
 
-# 8. Link .zshrc
-echo "📝 Linking .zshrc template..."
+# 8. Copy .zshrc
+echo "📝 Copying .zshrc template..."
 if [ -f "$HOME/.zshrc" ]; then
     mv "$HOME/.zshrc" "$HOME/.zshrc.bak"
     echo "   (Backup created at ~/.zshrc.bak)"
 fi
-ln -sf "$REPO_DIR/zshrc.template" "$HOME/.zshrc"
+cp "$REPO_DIR/zshrc.template" "$HOME/.zshrc"
 
 # 9. Install Nerd Font Symbols
 echo "🔡 Installing Nerd Font Symbols..."

@@ -16,10 +16,10 @@ This file provides core context and guidelines for AI agents (Gemini, Claude, et
 
 ### Installation
 - **Entry point**: `install.sh`.
-- **Logic**: Detects OS, installs dependencies, symlinks config files to `~/.zsh_config/`, and manages `.zshrc` backups.
+- **Logic**: Detects OS, installs dependencies, copies config files to `~/.zsh_config/`, and manages `.zshrc` backups.
 
 ### Modular Configuration
-- Files in `config/` are symlinked to `~/.zsh_config/`:
+- Files in `config/` are copied to `~/.zsh_config/`:
     - `aliases.zsh`: General purpose aliases.
     - `brew.zsh`: Homebrew setup.
     - `fnm.zsh`: Node.js version manager.

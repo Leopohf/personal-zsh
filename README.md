@@ -44,10 +44,10 @@ This configuration includes a dedicated module for managing Java versions via SD
    ```
 
 ## Structure
-- `zshrc.template`: The main entry point linked to `~/.zshrc`.
-- `config/`: Modular `.zsh` files sourced automatically.
-- `themes/`: Custom Zsh themes.
-- `install.sh`: Setup script for dependencies and symlinks.
+- `zshrc.template`: The main entry point copied to `~/.zshrc`.
+- `config/`: Modular `.zsh` files copied to `~/.zsh_config/` and sourced automatically.
+- `themes/`: Custom Zsh themes copied to Oh My Zsh custom themes folder.
+- `install.sh`: Setup script for dependencies and copying configuration.
 
 ## Nerd Font Symbols
 
