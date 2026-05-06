@@ -34,10 +34,11 @@ This configuration includes a dedicated module for managing Java versions via SD
 2. Run the installation script:
    ```bash
    cd ~/personal-zsh
-   chmod +x install.sh
+   # Grant execution permissions to the installer and its modules
+   chmod +x install.sh scripts/install/*.sh
    ./install.sh
    ```
-   *The script will ask which features to enable and save your preferences in `.zsh_plugins.env`.*
+   *Note: The script may prompt for your password to install Homebrew or system dependencies via `sudo`.*
 
 3. Restart your terminal or run:
    ```bash
