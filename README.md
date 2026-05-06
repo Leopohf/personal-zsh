@@ -48,3 +48,39 @@ This configuration includes a dedicated module for managing Java versions via SD
 - `config/`: Modular `.zsh` files sourced automatically.
 - `themes/`: Custom Zsh themes.
 - `install.sh`: Setup script for dependencies and symlinks.
+
+## Nerd Font Symbols
+
+This configuration relies on **Nerd Font Symbols** to display icons for the OS, Git, and other tools.
+
+### Installation
+The `install.sh` script automatically installs the necessary fonts:
+- **macOS**: Installed to `~/Library/Fonts`.
+- **Linux**: Installed to `~/.local/share/fonts`.
+
+> **Note for Linux**: We have disabled the automatic `fontconfig` rule because it can make some fonts appear thicker or in bold. We recommend manual configuration in your terminal settings (see below).
+
+### Terminal Configuration
+
+If icons (like the Apple or Linux logo) do not appear correctly, you may need to manually configure your terminal to use **Symbols Nerd Font Mono** as a fallback.
+
+#### VS Code
+Add the following to your `settings.json`:
+```json
+"terminal.integrated.fontFamily": "'Symbols Nerd Font Mono', 'Your favorite monospace font'",
+```
+
+#### Ghostty
+Ghostty usually detects the symbols font automatically. If it doesn't, add it to your configuration (`~/.config/ghostty/config`):
+```text
+font-family = "Your Main Font"
+font-family = "Symbols Nerd Font Mono"
+```
+
+#### iTerm2 (macOS)
+1. Open **Settings** > **Profiles** > **Text**.
+2. Check **Use a different font for non-ASCII text**.
+3. Select **Symbols Nerd Font Mono**.
+
+#### Other Terminals (Alacritty, Kitty)
+Most modern terminals will pick up the font automatically if it's installed in the system. If you see boxes, ensure the font is correctly named `Symbols Nerd Font Mono` in your configuration file.

@@ -56,7 +56,7 @@ done
 
 # 3. Check for Required Tools (from plugins list)
 echo "🛠️  Checking for required tools..."
-TOOLS=("gh" "fnm" "docker" "mvn" "aws" "az" "go" "ng" "bun" "pnpm")
+TOOLS=("gh" "fnm" "docker" "mvn" "aws" "az" "go" "ng" "bun" "pnpm" "unzip")
 for tool in "${TOOLS[@]}"; do
     if ! command -v "$tool" &> /dev/null; then
         echo "   ⚠️  Warning: '$tool' is not installed. Some plugins or configs may not work correctly."
@@ -105,5 +105,47 @@ if [ -f "$HOME/.zshrc" ]; then
     echo "   (Backup created at ~/.zshrc.bak)"
 fi
 ln -sf "$REPO_DIR/zshrc.template" "$HOME/.zshrc"
+
+# 9. Install Nerd Font Symbols
+echo "🔡 Installing Nerd Font Symbols..."
+FONT_ZIP="$REPO_DIR/icons-font/NerdFontsSymbolsOnly.zip"
+TEMP_FONT_DIR=$(mktemp -d)
+
+if [ -f "$FONT_ZIP" ]; then
+    unzip -q "$FONT_ZIP" -d "$TEMP_FONT_DIR"
+    
+    case "$(uname -s)" in
+        Darwin)
+            FONT_DEST="$HOME/Library/Fonts"
+            mkdir -p "$FONT_DEST"
+            cp "$TEMP_FONT_DIR"/*.ttf "$FONT_DEST/"
+            echo "   ✅ Fonts installed to $FONT_DEST"
+            ;;
+        Linux)
+            FONT_DEST="$HOME/.local/share/fonts"
+            mkdir -p "$FONT_DEST"
+            cp "$TEMP_FONT_DIR"/*.ttf "$FONT_DEST/"
+            
+            # Install fontconfig fallback if available
+            # Note: This is disabled by default because it can cause fonts to appear thicker/bold.
+            # Manual configuration in the terminal emulator is preferred.
+            # if [ -f "$TEMP_FONT_DIR/10-nerd-font-symbols.conf" ]; then
+            #     CONF_DEST="$HOME/.config/fontconfig/conf.d"
+            #     mkdir -p "$CONF_DEST"
+            #     cp "$TEMP_FONT_DIR/10-nerd-font-symbols.conf" "$CONF_DEST/"
+            #     echo "   ✅ Fontconfig rule added."
+            # fi
+            
+            fc-cache -f "$FONT_DEST"
+            echo "   ✅ Fonts installed to $FONT_DEST and cache updated."
+            ;;
+        *)
+            echo "   ⚠️  Manual font installation required for this OS."
+            ;;
+    esac
+    rm -rf "$TEMP_FONT_DIR"
+else
+    echo "   ❌ Font zip file not found at $FONT_ZIP"
+fi
 
 echo "✨ Setup complete! Please restart your terminal or run 'source ~/.zshrc'."
