@@ -7,25 +7,9 @@ CONFIG_DEST="$HOME/.zsh_config"
 
 echo "🚀 Starting Zsh configuration setup..."
 
-# 0. OS Detection
+# 0. OS Detection (Shared logic)
 echo "🔍 Detecting Operating System..."
-case "$(uname -s)" in
-    Darwin)
-        OS_ICON="" # Apple icon
-        ;;
-    Linux)
-        if grep -q "microsoft" /proc/version 2>/dev/null; then
-            OS_ICON="" # Windows icon for WSL
-        elif [ -f /etc/os-release ] && grep -q "Ubuntu" /etc/os-release; then
-            OS_ICON="" # Ubuntu icon
-        else
-            OS_ICON="" # Generic Linux icon
-        fi
-        ;;
-    *)
-        OS_ICON="" # Default terminal icon
-        ;;
-esac
+source "$REPO_DIR/config/00-os.zsh"
 echo "   Detected icon: $OS_ICON"
 
 # 1. Install Oh My Zsh if not present
@@ -58,7 +42,7 @@ done
 
 # 3. Check for Required Tools (from plugins list)
 echo "🛠️  Checking for required tools..."
-TOOLS=("gh" "fnm" "docker" "mvn" "aws" "az" "go" "ng" "bun" "pnpm" "unzip")
+TOOLS=("gh" "fnm" "docker" "mvn" "aws" "az" "go" "ng" "bun" "pnpm" "unzip" "fzf")
 for tool in "${TOOLS[@]}"; do
     if ! command -v "$tool" &> /dev/null; then
         echo "   ⚠️  Warning: '$tool' is not installed. Some plugins or configs may not work correctly."
@@ -96,11 +80,7 @@ for file in "$REPO_DIR/config/"*.zsh; do
     cp "$file" "$CONFIG_DEST/$(basename "$file")"
 done
 
-# 7. Create OS-specific config (dynamic)
-echo "💻 Generating OS-specific configuration..."
-echo "export OS_ICON='$OS_ICON'" > "$CONFIG_DEST/os_icon.zsh"
-
-# 8. Copy .zshrc
+# 7. Copy .zshrc
 echo "📝 Copying .zshrc template..."
 if [ -f "$HOME/.zshrc" ]; then
     mv "$HOME/.zshrc" "$HOME/.zshrc.bak"
@@ -116,35 +96,20 @@ TEMP_FONT_DIR=$(mktemp -d)
 if [ -f "$FONT_ZIP" ]; then
     unzip -q "$FONT_ZIP" -d "$TEMP_FONT_DIR"
     
-    case "$(uname -s)" in
-        Darwin)
-            FONT_DEST="$HOME/Library/Fonts"
-            mkdir -p "$FONT_DEST"
-            cp "$TEMP_FONT_DIR"/*.ttf "$FONT_DEST/"
-            echo "   ✅ Fonts installed to $FONT_DEST"
-            ;;
-        Linux)
-            FONT_DEST="$HOME/.local/share/fonts"
-            mkdir -p "$FONT_DEST"
-            cp "$TEMP_FONT_DIR"/*.ttf "$FONT_DEST/"
-            
-            # Install fontconfig fallback if available
-            # Note: This is disabled by default because it can cause fonts to appear thicker/bold.
-            # Manual configuration in the terminal emulator is preferred.
-            # if [ -f "$TEMP_FONT_DIR/10-nerd-font-symbols.conf" ]; then
-            #     CONF_DEST="$HOME/.config/fontconfig/conf.d"
-            #     mkdir -p "$CONF_DEST"
-            #     cp "$TEMP_FONT_DIR/10-nerd-font-symbols.conf" "$CONF_DEST/"
-            #     echo "   ✅ Fontconfig rule added."
-            # fi
-            
-            fc-cache -f "$FONT_DEST"
-            echo "   ✅ Fonts installed to $FONT_DEST and cache updated."
-            ;;
-        *)
-            echo "   ⚠️  Manual font installation required for this OS."
-            ;;
-    esac
+    if [ "$IS_MACOS" = true ]; then
+        FONT_DEST="$HOME/Library/Fonts"
+        mkdir -p "$FONT_DEST"
+        cp "$TEMP_FONT_DIR"/*.ttf "$FONT_DEST/"
+        echo "   ✅ Fonts installed to $FONT_DEST"
+    elif [ "$IS_LINUX" = true ]; then
+        FONT_DEST="$HOME/.local/share/fonts"
+        mkdir -p "$FONT_DEST"
+        cp "$TEMP_FONT_DIR"/*.ttf "$FONT_DEST/"
+        fc-cache -f "$FONT_DEST"
+        echo "   ✅ Fonts installed to $FONT_DEST and cache updated."
+    else
+        echo "   ⚠️  Manual font installation required for this OS."
+    fi
     rm -rf "$TEMP_FONT_DIR"
 else
     echo "   ❌ Font zip file not found at $FONT_ZIP"
