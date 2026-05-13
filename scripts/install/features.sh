@@ -48,6 +48,9 @@ select_features() {
     confirm_feature "PNPM" "Package Manager (pnpm)" && { SELECTED_CONFIG_FILES="$SELECTED_CONFIG_FILES pnpm.zsh"; BREW_DEPS="$BREW_DEPS pnpm"; }
     confirm_feature "BUN" "Bun Runtime" && { SELECTED_CONFIG_FILES="$SELECTED_CONFIG_FILES bun.zsh"; BREW_DEPS="$BREW_DEPS bun"; }
     confirm_feature "DOCKER" "Docker" && { SELECTED_OMZ_PLUGINS="$SELECTED_OMZ_PLUGINS docker"; SELECTED_CONFIG_FILES="$SELECTED_CONFIG_FILES docker.zsh"; BREW_DEPS="$BREW_DEPS docker"; }
+    if command -v docker &> /dev/null || [[ "$ENABLE_DOCKER" == "true" ]]; then
+        confirm_feature "DOCKER_COMPOSE" "Docker Compose" && SELECTED_OMZ_PLUGINS="$SELECTED_OMZ_PLUGINS docker-compose"
+    fi
     confirm_feature "SDKMAN" "Java Manager (SDKMAN!)" && { SELECTED_OMZ_PLUGINS="$SELECTED_OMZ_PLUGINS sdk"; SELECTED_CONFIG_FILES="$SELECTED_CONFIG_FILES sdkman.zsh"; INSTALL_SDKMAN=true; }
     confirm_feature "MAVEN" "Maven (mvn)" && SELECTED_OMZ_PLUGINS="$SELECTED_OMZ_PLUGINS mvn"
     confirm_feature "AWS" "AWS CLI" && { SELECTED_OMZ_PLUGINS="$SELECTED_OMZ_PLUGINS aws"; SELECTED_CONFIG_FILES="$SELECTED_CONFIG_FILES aws.zsh"; BREW_DEPS="$BREW_DEPS awscli"; }
