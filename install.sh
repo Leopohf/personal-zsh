@@ -20,6 +20,7 @@ install_brew_deps
 install_omz
 install_custom_plugins
 install_sdkman
+install_bun
 
 # 4. Configuration Phase
 copy_theme
@@ -27,6 +28,24 @@ copy_modular_configs
 generate_zshrc
 setup_local_config
 install_fonts
+
+# 5. Summary
+echo ""
+log_step "Installation Summary:"
+if [ ${#SUMMARY_SUCCESS[@]} -gt 0 ]; then
+    echo "✅ Successfully Installed/Configured:"
+    for item in "${SUMMARY_SUCCESS[@]}"; do
+        echo "   - $item"
+    done
+fi
+
+if [ ${#SUMMARY_FAILED[@]} -gt 0 ]; then
+    echo "❌ Failed to Install/Configure:"
+    for item in "${SUMMARY_FAILED[@]}"; do
+        echo "   - $item"
+    done
+fi
+echo ""
 
 log_step "Setup complete! Preferences saved in $PLUGINS_CONF"
 echo "🔄 Run 'source ~/.zshrc' to apply changes."

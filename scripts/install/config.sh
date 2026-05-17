@@ -63,15 +63,22 @@ install_fonts() {
     local FONT_ZIP="$REPO_DIR/icons-font/NerdFontsSymbolsOnly.zip"
     if [ -f "$FONT_ZIP" ]; then
         local TEMP_FONT_DIR=$(mktemp -d)
-        unzip -q "$FONT_ZIP" -d "$TEMP_FONT_DIR"
-        if [ "$IS_MACOS" = true ]; then
-            mkdir -p "$HOME/Library/Fonts"
-            cp "$TEMP_FONT_DIR"/*.ttf "$HOME/Library/Fonts/"
+        if unzip -q "$FONT_ZIP" -d "$TEMP_FONT_DIR"; then
+            if [ "$IS_MACOS" = true ]; then
+                mkdir -p "$HOME/Library/Fonts"
+                cp "$TEMP_FONT_DIR"/*.ttf "$HOME/Library/Fonts/"
+            else
+                mkdir -p "$HOME/.local/share/fonts"
+                cp "$TEMP_FONT_DIR"/*.ttf "$HOME/.local/share/fonts/"
+                fc-cache -f "$HOME/.local/share/fonts"
+            fi
+            SUMMARY_SUCCESS+=("Nerd Fonts")
         else
-            mkdir -p "$HOME/.local/share/fonts"
-            cp "$TEMP_FONT_DIR"/*.ttf "$HOME/.local/share/fonts/"
-            fc-cache -f "$HOME/.local/share/fonts"
+            SUMMARY_FAILED+=("Nerd Fonts (unzip failed)")
         fi
         rm -rf "$TEMP_FONT_DIR"
+    else
+        log_warn "Font archive not found at $FONT_ZIP"
+        SUMMARY_FAILED+=("Nerd Fonts (archive not found)")
     fi
 }

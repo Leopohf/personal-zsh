@@ -19,9 +19,14 @@ install_brew_deps() {
         for dep in $BREW_DEPS; do
             if ! brew list $dep &>/dev/null; then
                 echo "   📥 Installing $dep..."
-                brew install $dep
+                if brew install $dep; then
+                    SUMMARY_SUCCESS+=("Brew: $dep")
+                else
+                    SUMMARY_FAILED+=("Brew: $dep (installation failed)")
+                fi
             else
                 log_info "$dep is already installed."
+                SUMMARY_SUCCESS+=("Brew: $dep (already installed)")
             fi
         done
     fi
@@ -30,9 +35,14 @@ install_brew_deps() {
 install_omz() {
     if [ ! -d "$HOME/.oh-my-zsh" ]; then
         echo "📦 Installing Oh My Zsh..."
-        sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)" "" --unattended
+        if sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)" "" --unattended; then
+            SUMMARY_SUCCESS+=("Oh My Zsh")
+        else
+            SUMMARY_FAILED+=("Oh My Zsh (installation failed)")
+        fi
     else
         log_info "Oh My Zsh is already installed."
+        SUMMARY_SUCCESS+=("Oh My Zsh (already installed)")
     fi
 }
 
@@ -46,9 +56,14 @@ install_custom_plugins() {
     )
     for plugin in "${!CUSTOM_PLUGINS[@]}"; do
         if [ ! -d "$PLUGINS_DIR/$plugin" ]; then
-            git clone "${CUSTOM_PLUGINS[$plugin]}" "$PLUGINS_DIR/$plugin"
+            if git clone "${CUSTOM_PLUGINS[$plugin]}" "$PLUGINS_DIR/$plugin"; then
+                SUMMARY_SUCCESS+=("Zsh Plugin: $plugin")
+            else
+                SUMMARY_FAILED+=("Zsh Plugin: $plugin (git clone failed)")
+            fi
         else
             log_info "$plugin already exists."
+            SUMMARY_SUCCESS+=("Zsh Plugin: $plugin (already exists)")
         fi
     done
 }
@@ -56,9 +71,28 @@ install_custom_plugins() {
 install_sdkman() {
     if [ "$INSTALL_SDKMAN" = true ] && [ ! -d "$HOME/.sdkman" ]; then
         echo "📦 Installing SDKMAN!..."
-        curl -s "https://get.sdkman.io" | bash
-        sed -i 's/sdkman_auto_env=false/sdkman_auto_env=true/g' "$HOME/.sdkman/etc/config" 2>/dev/null
+        if curl -s "https://get.sdkman.io" | bash; then
+            sed -i 's/sdkman_auto_env=false/sdkman_auto_env=true/g' "$HOME/.sdkman/etc/config" 2>/dev/null
+            SUMMARY_SUCCESS+=("SDKMAN!")
+        else
+            SUMMARY_FAILED+=("SDKMAN! (installation failed)")
+        fi
     elif [ "$INSTALL_SDKMAN" = true ]; then
         log_info "SDKMAN! is already installed."
+        SUMMARY_SUCCESS+=("SDKMAN! (already installed)")
+    fi
+}
+
+install_bun() {
+    if [[ "$ENABLE_BUN" == "true" ]] && ! command -v bun &> /dev/null; then
+        echo "📦 Installing Bun..."
+        if curl -fsSL https://bun.sh/install | bash; then
+            SUMMARY_SUCCESS+=("Bun")
+        else
+            SUMMARY_FAILED+=("Bun (installation failed)")
+        fi
+    elif [[ "$ENABLE_BUN" == "true" ]]; then
+        log_info "Bun is already installed."
+        SUMMARY_SUCCESS+=("Bun (already installed)")
     fi
 }

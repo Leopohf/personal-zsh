@@ -1,13 +1,5 @@
-# Docker & Docker Compose
+# Docker
 alias d="docker"
-
-# Use 'docker compose' (v2) if available, otherwise fallback to 'docker-compose' (v1)
-if docker compose version &> /dev/null; then
-    alias dc="docker compose"
-    alias docker-compose="docker compose"
-else
-    alias dc="docker-compose"
-fi
 
 alias dps="docker ps"
 alias dpa="docker ps -a"

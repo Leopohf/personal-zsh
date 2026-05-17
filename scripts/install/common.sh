@@ -10,6 +10,8 @@ SELECTED_OMZ_PLUGINS="history"
 SELECTED_CONFIG_FILES="00-os.zsh brew.zsh aliases.zsh exports.zsh history.zsh zsh-plugins.zsh"
 BREW_DEPS=""
 INSTALL_SDKMAN=false
+SUMMARY_SUCCESS=()
+SUMMARY_FAILED=()
 
 # OS Detection
 source "$REPO_DIR/config/core/00-os.zsh"

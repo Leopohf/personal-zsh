@@ -46,10 +46,10 @@ select_features() {
     confirm_feature "GH" "GitHub CLI (gh)" && { SELECTED_OMZ_PLUGINS="$SELECTED_OMZ_PLUGINS gh"; BREW_DEPS="$BREW_DEPS gh"; }
     confirm_feature "FNM" "Node Manager (fnm)" && { SELECTED_OMZ_PLUGINS="$SELECTED_OMZ_PLUGINS fnm"; SELECTED_CONFIG_FILES="$SELECTED_CONFIG_FILES fnm.zsh"; BREW_DEPS="$BREW_DEPS fnm"; }
     confirm_feature "PNPM" "Package Manager (pnpm)" && { SELECTED_CONFIG_FILES="$SELECTED_CONFIG_FILES pnpm.zsh"; BREW_DEPS="$BREW_DEPS pnpm"; }
-    confirm_feature "BUN" "Bun Runtime" && { SELECTED_CONFIG_FILES="$SELECTED_CONFIG_FILES bun.zsh"; BREW_DEPS="$BREW_DEPS bun"; }
+    confirm_feature "BUN" "Bun Runtime" && { SELECTED_CONFIG_FILES="$SELECTED_CONFIG_FILES bun.zsh"; }
     confirm_feature "DOCKER" "Docker" && { SELECTED_OMZ_PLUGINS="$SELECTED_OMZ_PLUGINS docker"; SELECTED_CONFIG_FILES="$SELECTED_CONFIG_FILES docker.zsh"; BREW_DEPS="$BREW_DEPS docker"; }
     if command -v docker &> /dev/null || [[ "$ENABLE_DOCKER" == "true" ]]; then
-        confirm_feature "DOCKER_COMPOSE" "Docker Compose" && SELECTED_OMZ_PLUGINS="$SELECTED_OMZ_PLUGINS docker-compose"
+        confirm_feature "DOCKER_COMPOSE" "Docker Compose" && { SELECTED_OMZ_PLUGINS="$SELECTED_OMZ_PLUGINS docker-compose"; SELECTED_CONFIG_FILES="$SELECTED_CONFIG_FILES docker-compose.zsh"; }
     fi
     confirm_feature "SDKMAN" "Java Manager (SDKMAN!)" && { SELECTED_OMZ_PLUGINS="$SELECTED_OMZ_PLUGINS sdk"; SELECTED_CONFIG_FILES="$SELECTED_CONFIG_FILES sdkman.zsh"; INSTALL_SDKMAN=true; }
     confirm_feature "MAVEN" "Maven (mvn)" && SELECTED_OMZ_PLUGINS="$SELECTED_OMZ_PLUGINS mvn"
