@@ -26,7 +26,7 @@ install_brew_deps() {
                 fi
             else
                 log_info "$dep is already installed."
-                SUMMARY_SUCCESS+=("Brew: $dep (already installed)")
+                SUMMARY_SUCCESS+=("Brew: $dep")
             fi
         done
     fi
@@ -42,7 +42,7 @@ install_omz() {
         fi
     else
         log_info "Oh My Zsh is already installed."
-        SUMMARY_SUCCESS+=("Oh My Zsh (already installed)")
+        SUMMARY_SUCCESS+=("Oh My Zsh")
     fi
 }
 
@@ -63,7 +63,7 @@ install_custom_plugins() {
             fi
         else
             log_info "$plugin already exists."
-            SUMMARY_SUCCESS+=("Zsh Plugin: $plugin (already exists)")
+            SUMMARY_SUCCESS+=("Zsh Plugin: $plugin")
         fi
     done
 }
@@ -79,7 +79,7 @@ install_sdkman() {
         fi
     elif [ "$INSTALL_SDKMAN" = true ]; then
         log_info "SDKMAN! is already installed."
-        SUMMARY_SUCCESS+=("SDKMAN! (already installed)")
+        SUMMARY_SUCCESS+=("SDKMAN!")
     fi
 }
 
@@ -93,12 +93,18 @@ install_bun() {
         fi
     elif [[ "$ENABLE_BUN" == "true" ]]; then
         log_info "Bun is already installed."
-        SUMMARY_SUCCESS+=("Bun (already installed)")
+        SUMMARY_SUCCESS+=("Bun")
     fi
 }
 
 install_angular() {
     if [ "$INSTALL_ANGULAR" = true ]; then
+        if command -v ng &> /dev/null; then
+            log_info "Angular CLI is already installed."
+            SUMMARY_SUCCESS+=("Angular CLI")
+            return
+        fi
+
         echo "📦 Installing Angular CLI globally via pnpm..."
         if ! command -v pnpm &> /dev/null; then
             echo "   ❌ pnpm is not available yet, cannot install Angular CLI."

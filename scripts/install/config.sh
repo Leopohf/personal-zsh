@@ -1,9 +1,20 @@
 #!/bin/bash
 
 copy_theme() {
+    local THEME_DEST="$ZSH_CUSTOM/themes/leonardo.zsh-theme"
+    if [ -f "$THEME_DEST" ]; then
+        log_info "Theme is already installed."
+        SUMMARY_SUCCESS+=("Theme")
+        return
+    fi
+
     echo "🎨 Copying theme..."
     mkdir -p "$ZSH_CUSTOM/themes"
-    cp "$REPO_DIR/themes/leonardo.zsh-theme" "$ZSH_CUSTOM/themes/leonardo.zsh-theme"
+    if cp "$REPO_DIR/themes/leonardo.zsh-theme" "$THEME_DEST"; then
+        SUMMARY_SUCCESS+=("Theme")
+    else
+        SUMMARY_FAILED+=("Theme (copy failed)")
+    fi
 }
 
 copy_modular_configs() {
@@ -59,18 +70,28 @@ EOF
 }
 
 install_fonts() {
+    local FONT_DIR
+    if [ "$IS_MACOS" = true ]; then
+        FONT_DIR="$HOME/Library/Fonts"
+    else
+        FONT_DIR="$HOME/.local/share/fonts"
+    fi
+
+    if [ -f "$FONT_DIR/SymbolsNerdFont-Regular.ttf" ]; then
+        log_info "Nerd Fonts are already installed."
+        SUMMARY_SUCCESS+=("Nerd Fonts")
+        return
+    fi
+
     echo "🔡 Installing fonts..."
     local FONT_ZIP="$REPO_DIR/icons-font/NerdFontsSymbolsOnly.zip"
     if [ -f "$FONT_ZIP" ]; then
         local TEMP_FONT_DIR=$(mktemp -d)
         if unzip -q "$FONT_ZIP" -d "$TEMP_FONT_DIR"; then
-            if [ "$IS_MACOS" = true ]; then
-                mkdir -p "$HOME/Library/Fonts"
-                cp "$TEMP_FONT_DIR"/*.ttf "$HOME/Library/Fonts/"
-            else
-                mkdir -p "$HOME/.local/share/fonts"
-                cp "$TEMP_FONT_DIR"/*.ttf "$HOME/.local/share/fonts/"
-                fc-cache -f "$HOME/.local/share/fonts"
+            mkdir -p "$FONT_DIR"
+            cp "$TEMP_FONT_DIR"/*.ttf "$FONT_DIR/"
+            if [ "$IS_MACOS" = false ]; then
+                fc-cache -f "$FONT_DIR"
             fi
             SUMMARY_SUCCESS+=("Nerd Fonts")
         else
@@ -82,3 +103,4 @@ install_fonts() {
         SUMMARY_FAILED+=("Nerd Fonts (archive not found)")
     fi
 }
+
