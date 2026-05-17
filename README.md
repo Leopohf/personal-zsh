@@ -3,12 +3,21 @@
 This repository contains a portable, modular Zsh configuration based on **Oh My Zsh** and the **Powerlevel10k**-inspired custom theme `leonardo`.
 
 ## Features
-- **Granular Installation**: Choose exactly which tools and plugins to install (Git, GitHub CLI, Node, pnpm, Bun, Docker, AWS, Azure, etc.) independently via an interactive menu.
+- **Granular Installation**: Choose exactly which tools and plugins to install (Git, GitHub CLI, Node, pnpm, Bun, Docker, AWS, Azure, Angular, Go, Maven, etc.) independently via an interactive menu.
+- **Enhanced Terminal Experience**: Includes pre-configured support for **Zsh Autosuggestions**, **Syntax Highlighting**, and **Fzf** (Fuzzy Finder).
 - **Homebrew Integration**: Automatically installs missing CLI tools using Homebrew for a seamless setup.
 - **Modular Structure**: Configuration is split into specialized subdirectories. Only the configurations for selected features are deployed.
 - **Dynamic Plugin Management**: Automatically generates the Oh My Zsh plugin list based on your preferences.
 - **Custom Theme**: `leonardo.zsh-theme` (Customized robbyrussell with dynamic OS icons).
 - **Java Management**: Integrated [SDKMAN!](https://sdkman.io/) with automatic version switching.
+- **Utility Tools**: Includes handy utilities like **Extract** (one command to unzip anything) and **Warp Directory (wd)** for quick navigation.
+
+## Mandatory Dependencies
+
+Some features have mandatory dependencies for security or functional reasons:
+
+- **Angular CLI**: Requires global installation via `pnpm`. You must agree to this during the installation process.
+- **Docker**: Enabling Docker support requires the installation of `Docker Compose`.
 
 ## Java & SDKMAN!
 
@@ -54,8 +63,11 @@ Example `.zsh_plugins.env`:
 ENABLE_GH=true
 ENABLE_FNM=true
 ENABLE_PNPM=true
-ENABLE_DOCKER=false
-ENABLE_AWS=false
+ENABLE_NG=true
+ENABLE_DOCKER=true
+ENABLE_DOCKER_COMPOSE=true
+ENABLE_AUTOSUGGEST=true
+ENABLE_HIGHLIGHT=true
 ...
 ```
 
