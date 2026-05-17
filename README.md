@@ -95,6 +95,36 @@ To keep your secrets safe and avoid committing them to a repository, this projec
    source ~/.zshrc
    ```
 
+## Testing
+
+This project uses [Bats (Bash Automated Testing System)](https://github.com/bats-core/bats-core) for unit and integration testing of the shell scripts.
+
+### Running Tests Locally
+
+Tests are managed via `pnpm`. To run the full test suite:
+
+1. Install testing dependencies:
+   ```bash
+   pnpm install
+   ```
+2. Execute the tests:
+   ```bash
+   pnpm test
+   ```
+
+### Testing Strategy
+
+- **Mocking**: System-altering commands like `brew`, `git`, `curl`, and `unzip` are mocked during testing to prevent actual modifications to your local environment.
+- **Dry Run**: The main `install.sh` supports a `--dry-run` flag which allows the script to be safely executed within tests to verify the entry-point logic and modular loading.
+- **Isolation**: Tests utilize `$BATS_TMPDIR` to create temporary home directories and configuration files, ensuring that your actual system configuration remains untouched.
+
+### Continuous Integration
+
+A GitHub Actions pipeline is configured to automatically run the test suite on every push and pull request. The pipeline tests the configuration across:
+- **Ubuntu** (Latest)
+- **macOS** (Latest)
+- **Windows** (via **WSL** Ubuntu-22.04)
+
 ## Structure
 - `zshrc.template`: The main entry point copied to `~/.zshrc`.
 - `install.sh`: Main entry point for the installation process.

@@ -3,6 +3,17 @@
 # Main entry point for the personal-zsh installer
 REPO_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
+# 0. Parse Arguments
+DRY_RUN=false
+for arg in "$@"; do
+    case $arg in
+        --dry-run)
+        DRY_RUN=true
+        shift
+        ;;
+    esac
+done
+
 # 1. Load Modules
 source "$REPO_DIR/scripts/install/common.sh"
 source "$REPO_DIR/scripts/install/features.sh"
@@ -17,19 +28,23 @@ verify_mandatory_deps
 select_features
 
 # 3. Installation Phase
-install_brew_deps
-install_omz
-install_custom_plugins
-install_sdkman
-install_bun
-install_angular
+if [ "$DRY_RUN" = true ]; then
+    log_step "DRY RUN: Skipping installation and configuration phases."
+else
+    install_brew_deps
+    install_omz
+    install_custom_plugins
+    install_sdkman
+    install_bun
+    install_angular
 
-# 4. Configuration Phase
-copy_theme
-copy_modular_configs
-generate_zshrc
-setup_local_config
-install_fonts
+    # 4. Configuration Phase
+    copy_theme
+    copy_modular_configs
+    generate_zshrc
+    setup_local_config
+    install_fonts
+fi
 
 # 5. Summary
 echo ""

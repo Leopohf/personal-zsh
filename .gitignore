@@ -1,0 +1,4 @@
+node_modules/
+.pnpm-debug.log*
+.zsh_plugins.env
+tests/helpers/bin/
