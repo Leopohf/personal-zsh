@@ -55,14 +55,21 @@ verify_mandatory_deps() {
 select_features() {
     echo "🔍 Feature selection..."
     
-    [ "$IS_LINUX" = true ] && BREW_DEPS="unzip"
+    # Check for git (essential for cloning)
+    if ! command -v git &> /dev/null; then
+        echo "⚠️  Git not found. Adding to Homebrew dependencies..."
+        BREW_DEPS="git"
+    fi
+
+    if [ "$IS_LINUX" = true ]; then
+        BREW_DEPS="$BREW_DEPS unzip"
+    fi
 
     # OMZ Plugins
     confirm_feature "AUTOSUGGEST" "Zsh Autosuggestions" && SELECTED_OMZ_PLUGINS="$SELECTED_OMZ_PLUGINS zsh-autosuggestions"
     confirm_feature "HIGHLIGHT" "Zsh Syntax Highlighting" && SELECTED_OMZ_PLUGINS="$SELECTED_OMZ_PLUGINS zsh-syntax-highlighting"
 
     # Tools
-    confirm_feature "GIT" "Git" && { SELECTED_OMZ_PLUGINS="$SELECTED_OMZ_PLUGINS git"; SELECTED_CONFIG_FILES="$SELECTED_CONFIG_FILES git.zsh"; }
     confirm_feature "GH" "GitHub CLI (gh)" && { SELECTED_OMZ_PLUGINS="$SELECTED_OMZ_PLUGINS gh"; BREW_DEPS="$BREW_DEPS gh"; }
     confirm_feature "FNM" "Node Manager (fnm)" && { SELECTED_OMZ_PLUGINS="$SELECTED_OMZ_PLUGINS fnm"; SELECTED_CONFIG_FILES="$SELECTED_CONFIG_FILES fnm.zsh"; BREW_DEPS="$BREW_DEPS fnm"; }
     confirm_feature "PNPM" "Package Manager (pnpm)" && { SELECTED_CONFIG_FILES="$SELECTED_CONFIG_FILES pnpm.zsh"; BREW_DEPS="$BREW_DEPS pnpm"; }

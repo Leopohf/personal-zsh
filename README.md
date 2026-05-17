@@ -51,7 +51,6 @@ Your selected features are stored in `.zsh_plugins.env`. You can manually edit t
 
 Example `.zsh_plugins.env`:
 ```bash
-ENABLE_GIT=true
 ENABLE_GH=true
 ENABLE_FNM=true
 ENABLE_PNPM=true
