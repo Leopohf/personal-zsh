@@ -79,9 +79,12 @@ select_features() {
         SELECTED_OMZ_PLUGINS="$SELECTED_OMZ_PLUGINS ng"
         SELECTED_CONFIG_FILES="$SELECTED_CONFIG_FILES ng.zsh"
         INSTALL_ANGULAR=true
-        echo "⚠️  Warning: Angular CLI will be installed globally via pnpm (mandatory for security)."
-        if [[ ! " $BREW_DEPS " =~ " pnpm " ]]; then
-            BREW_DEPS="$BREW_DEPS pnpm"
+        
+        if [[ "$ENABLE_PNPM" != "true" ]] && ! command -v pnpm &> /dev/null; then
+            echo "⚠️  Warning: Angular CLI will be installed globally via pnpm (mandatory for security)."
+            if [[ ! " $BREW_DEPS " =~ " pnpm " ]]; then
+                BREW_DEPS="$BREW_DEPS pnpm"
+            fi
         fi
     fi
     confirm_feature "GOLANG" "Go Language" && { SELECTED_OMZ_PLUGINS="$SELECTED_OMZ_PLUGINS golang"; BREW_DEPS="$BREW_DEPS go"; }
