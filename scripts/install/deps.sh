@@ -96,3 +96,19 @@ install_bun() {
         SUMMARY_SUCCESS+=("Bun (already installed)")
     fi
 }
+
+install_angular() {
+    if [ "$INSTALL_ANGULAR" = true ]; then
+        echo "📦 Installing Angular CLI globally via pnpm..."
+        if ! command -v pnpm &> /dev/null; then
+            echo "   ❌ pnpm is not available yet, cannot install Angular CLI."
+            SUMMARY_FAILED+=("Angular CLI (pnpm not found)")
+            return
+        fi
+        if pnpm add -g @angular/cli; then
+            SUMMARY_SUCCESS+=("Angular CLI")
+        else
+            SUMMARY_FAILED+=("Angular CLI (installation failed)")
+        fi
+    fi
+}

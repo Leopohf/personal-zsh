@@ -13,6 +13,7 @@ log_step "Starting Zsh configuration setup..."
 
 # 2. Preferences & Selection
 load_preferences
+verify_mandatory_deps
 select_features
 
 # 3. Installation Phase
@@ -21,6 +22,7 @@ install_omz
 install_custom_plugins
 install_sdkman
 install_bun
+install_angular
 
 # 4. Configuration Phase
 copy_theme
