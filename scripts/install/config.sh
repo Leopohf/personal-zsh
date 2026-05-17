@@ -34,6 +34,30 @@ generate_zshrc() {
     fi
 }
 
+setup_local_config() {
+    echo "🔐 Setting up local configuration for secrets..."
+    local LOCAL_ZSHRC="$HOME/.zshrc.local"
+    if [ ! -f "$LOCAL_ZSHRC" ]; then
+        cat << 'EOF' > "$LOCAL_ZSHRC"
+# ~/.zshrc.local
+# This file is for your private/local configuration.
+# Use it to store API keys, tokens, and sensitive environment variables.
+#
+# IMPORTANT: This file is NOT tracked by git and is sourced at the end of ~/.zshrc.
+# It will NOT be overwritten by the installer.
+
+# Example:
+# export OPENAI_API_KEY="sk-..."
+# export GITHUB_TOKEN="ghp_..."
+EOF
+        chmod 600 "$LOCAL_ZSHRC"
+        echo "   ✅ Created $LOCAL_ZSHRC with safe permissions (600)."
+        echo "   💡 Use this file to store your API_KEYs and sensitive data safely."
+    else
+        echo "   ℹ️  $LOCAL_ZSHRC already exists. Keeping your existing secrets safe."
+    fi
+}
+
 install_fonts() {
     echo "🔡 Installing fonts..."
     local FONT_ZIP="$REPO_DIR/icons-font/NerdFontsSymbolsOnly.zip"

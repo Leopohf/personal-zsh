@@ -25,6 +25,7 @@ install_sdkman
 copy_theme
 copy_modular_configs
 generate_zshrc
+setup_local_config
 install_fonts
 
 log_step "Setup complete! Preferences saved in $PLUGINS_CONF"

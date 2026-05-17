@@ -60,6 +60,30 @@ ENABLE_AWS=false
 ...
 ```
 
+## Sensitive Data & API Keys
+
+To keep your secrets safe and avoid committing them to a repository, this project uses a local file: `~/.zshrc.local`.
+
+- **Security**: This file is created with restricted permissions (`chmod 600`) so only you can read it.
+- **Persistence**: It is NOT tracked by Git and is NOT overwritten when you re-run the `install.sh` script.
+- **Usage**: Use it to export sensitive environment variables, such as API keys or personal tokens.
+
+### How to use it:
+
+1. Open the file:
+   ```bash
+   nvim ~/.zshrc.local
+   ```
+2. Add your exports:
+   ```zsh
+   export OPENAI_API_KEY="your-secret-key"
+   export GITHUB_TOKEN="your-personal-token"
+   ```
+3. Reload your terminal:
+   ```bash
+   source ~/.zshrc
+   ```
+
 ## Structure
 - `zshrc.template`: The main entry point copied to `~/.zshrc`.
 - `install.sh`: Main entry point for the installation process.
