@@ -3,6 +3,6 @@ node_modules/
 .zsh_plugins.env
 tests/helpers/bin/
 
-.antigravity/
+.antigravitycli/
 .vscode/
 .idea/
