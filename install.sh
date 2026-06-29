@@ -34,6 +34,7 @@ else
     install_brew_deps
     install_omz
     install_custom_plugins
+    install_fnm_node
     install_sdkman
     install_bun
     install_angular

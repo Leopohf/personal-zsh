@@ -46,33 +46,58 @@ install_omz() {
     fi
 }
 
+_clone_plugin() {
+    local plugin="$1"
+    local url="$2"
+    local dest="$ZSH_CUSTOM/plugins/$plugin"
+    if [ ! -d "$dest" ]; then
+        if git clone "$url" "$dest"; then
+            SUMMARY_SUCCESS+=("Zsh Plugin: $plugin")
+        else
+            SUMMARY_FAILED+=("Zsh Plugin: $plugin (git clone failed)")
+        fi
+    else
+        log_info "$plugin already exists."
+        SUMMARY_SUCCESS+=("Zsh Plugin: $plugin")
+    fi
+}
+
 install_custom_plugins() {
     echo "🔌 Cloning custom plugins..."
-    local PLUGINS_DIR="$ZSH_CUSTOM/plugins"
-    mkdir -p "$PLUGINS_DIR"
-    declare -A CUSTOM_PLUGINS=(
-        ["zsh-autosuggestions"]="https://github.com/zsh-users/zsh-autosuggestions"
-        ["zsh-syntax-highlighting"]="https://github.com/zsh-users/zsh-syntax-highlighting.git"
-    )
-    for plugin in "${!CUSTOM_PLUGINS[@]}"; do
-        if [ ! -d "$PLUGINS_DIR/$plugin" ]; then
-            if git clone "${CUSTOM_PLUGINS[$plugin]}" "$PLUGINS_DIR/$plugin"; then
-                SUMMARY_SUCCESS+=("Zsh Plugin: $plugin")
-            else
-                SUMMARY_FAILED+=("Zsh Plugin: $plugin (git clone failed)")
-            fi
-        else
-            log_info "$plugin already exists."
-            SUMMARY_SUCCESS+=("Zsh Plugin: $plugin")
-        fi
-    done
+    mkdir -p "$ZSH_CUSTOM/plugins"
+    _clone_plugin "zsh-autosuggestions" "https://github.com/zsh-users/zsh-autosuggestions"
+    _clone_plugin "zsh-syntax-highlighting" "https://github.com/zsh-users/zsh-syntax-highlighting.git"
 }
 
 install_sdkman() {
     if [ "$INSTALL_SDKMAN" = true ] && [ ! -d "$HOME/.sdkman" ]; then
         echo "📦 Installing SDKMAN!..."
-        if curl -s "https://get.sdkman.io" | bash; then
-            sed -i 's/sdkman_auto_env=false/sdkman_auto_env=true/g' "$HOME/.sdkman/etc/config" 2>/dev/null
+
+        # SDKMAN requires Bash 4+. macOS ships with Bash 3.2,
+        # so we use Homebrew's modern Bash when available.
+        local bash_bin="bash"
+        if [ "$IS_MACOS" = true ]; then
+            local brew_bash
+            brew_bash="$(brew --prefix)/bin/bash"
+            if [ -x "$brew_bash" ]; then
+                bash_bin="$brew_bash"
+            else
+                log_warn "Homebrew bash not found. Installing..."
+                if brew install bash; then
+                    bash_bin="$(brew --prefix)/bin/bash"
+                else
+                    SUMMARY_FAILED+=("SDKMAN! (requires Bash 4+, brew install bash failed)")
+                    return
+                fi
+            fi
+        fi
+
+        if curl -s "https://get.sdkman.io" | "$bash_bin"; then
+            if [[ "$OSTYPE" == "darwin"* ]]; then
+                sed -i '' 's/sdkman_auto_env=false/sdkman_auto_env=true/g' "$HOME/.sdkman/etc/config" 2>/dev/null
+            else
+                sed -i 's/sdkman_auto_env=false/sdkman_auto_env=true/g' "$HOME/.sdkman/etc/config" 2>/dev/null
+            fi
             SUMMARY_SUCCESS+=("SDKMAN!")
         else
             SUMMARY_FAILED+=("SDKMAN! (installation failed)")
@@ -80,6 +105,24 @@ install_sdkman() {
     elif [ "$INSTALL_SDKMAN" = true ]; then
         log_info "SDKMAN! is already installed."
         SUMMARY_SUCCESS+=("SDKMAN!")
+    fi
+}
+
+install_fnm_node() {
+    if [[ "$ENABLE_FNM" == "true" ]] && command -v fnm &> /dev/null; then
+        eval "$(fnm env)"
+        if ! command -v node &> /dev/null; then
+            echo "📦 Installing Node.js LTS via fnm..."
+            if fnm install --lts && fnm default lts-latest; then
+                eval "$(fnm env)"
+                SUMMARY_SUCCESS+=("Node.js LTS (fnm)")
+            else
+                SUMMARY_FAILED+=("Node.js LTS (fnm install failed)")
+            fi
+        else
+            log_info "Node.js is already available via fnm."
+            SUMMARY_SUCCESS+=("Node.js (fnm)")
+        fi
     fi
 }
 
@@ -111,6 +154,16 @@ install_angular() {
             SUMMARY_FAILED+=("Angular CLI (pnpm not found)")
             return
         fi
+
+        # Ensure fnm and node are in PATH for pnpm
+        if command -v fnm &> /dev/null; then
+            eval "$(fnm env)"
+        fi
+
+        # Ensure pnpm global bin is in PATH
+        export PNPM_HOME="$HOME/.local/share/pnpm"
+        export PATH="$PNPM_HOME/bin:$PNPM_HOME:$PATH"
+
         if pnpm add -g @angular/cli; then
             SUMMARY_SUCCESS+=("Angular CLI")
         else

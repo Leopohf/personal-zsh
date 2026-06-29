@@ -16,6 +16,11 @@ SUMMARY_FAILED=()
 # OS Detection
 source "$REPO_DIR/config/core/00-os.zsh"
 
+# Include macOS-specific config when on macOS
+if [ "$IS_MACOS" = true ]; then
+    SELECTED_CONFIG_FILES="$SELECTED_CONFIG_FILES macos.zsh"
+fi
+
 log_info() { echo "   ✅ $1"; }
 log_warn() { echo "   ⚠️  $1"; }
 log_err() { echo "   ❌ $1"; }
