@@ -7,30 +7,141 @@ on:
     branches: [ main ]
 
 jobs:
-  test-unix:
+  # ── Detect which source files changed ──────────────────────────
+  changes:
+    runs-on: ubuntu-latest
+    permissions:
+      pull-requests: read
+    outputs:
+      common:   ${{ steps.filter.outputs.common }}
+      features: ${{ steps.filter.outputs.features }}
+      deps:     ${{ steps.filter.outputs.deps }}
+      config:   ${{ steps.filter.outputs.config }}
+      install:  ${{ steps.filter.outputs.install }}
+      infra:    ${{ steps.filter.outputs.infra }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: dorny/paths-filter@v3
+        id: filter
+        with:
+          filters: |
+            common:
+              - 'scripts/install/common.sh'
+              - 'tests/common.bats'
+            features:
+              - 'scripts/install/features.sh'
+              - 'tests/features.bats'
+            deps:
+              - 'scripts/install/deps.sh'
+              - 'tests/deps.bats'
+            config:
+              - 'scripts/install/config.sh'
+              - 'tests/config.bats'
+            install:
+              - 'install.sh'
+              - 'tests/install.bats'
+            infra:
+              - 'tests/helpers/**'
+              - 'package.json'
+              - 'pnpm-lock.yaml'
+              - '.github/workflows/test.yml'
+
+  # ── Reusable setup & test steps via matrix ─────────────────────
+  test-common:
+    needs: changes
+    if: ${{ needs.changes.outputs.common == 'true' || needs.changes.outputs.infra == 'true' }}
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
         os: [ubuntu-latest, macos-latest]
     steps:
       - uses: actions/checkout@v4
-
-      - name: Install pnpm
-        uses: pnpm/action-setup@v4
-
-      - name: Set node version
-        uses: actions/setup-node@v4
+      - uses: pnpm/action-setup@v4
+      - uses: actions/setup-node@v4
         with:
           node-version: 20
           cache: 'pnpm'
+      - run: pnpm install
+      - run: pnpm exec bats tests/common.bats
 
-      - name: Install dependencies
-        run: pnpm install
+  test-features:
+    needs: changes
+    if: ${{ needs.changes.outputs.features == 'true' || needs.changes.outputs.infra == 'true' }}
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [ubuntu-latest, macos-latest]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: 'pnpm'
+      - run: pnpm install
+      - run: pnpm exec bats tests/features.bats
 
-      - name: Run tests
-        run: pnpm test
+  test-deps:
+    needs: changes
+    if: ${{ needs.changes.outputs.deps == 'true' || needs.changes.outputs.infra == 'true' }}
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [ubuntu-latest, macos-latest]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: 'pnpm'
+      - run: pnpm install
+      - run: pnpm exec bats tests/deps.bats
 
+  test-config:
+    needs: changes
+    if: ${{ needs.changes.outputs.config == 'true' || needs.changes.outputs.infra == 'true' }}
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [ubuntu-latest, macos-latest]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: 'pnpm'
+      - run: pnpm install
+      - run: pnpm exec bats tests/config.bats
+
+  test-install:
+    needs: changes
+    if: ${{ needs.changes.outputs.install == 'true' || needs.changes.outputs.infra == 'true' }}
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [ubuntu-latest, macos-latest]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: 'pnpm'
+      - run: pnpm install
+      - run: pnpm exec bats tests/install.bats
+
+  # ── Windows (WSL) — runs ALL tests but only when relevant ──────
   test-windows:
+    needs: changes
+    if: |
+      needs.changes.outputs.common == 'true' ||
+      needs.changes.outputs.features == 'true' ||
+      needs.changes.outputs.deps == 'true' ||
+      needs.changes.outputs.config == 'true' ||
+      needs.changes.outputs.install == 'true' ||
+      needs.changes.outputs.infra == 'true'
     runs-on: windows-latest
     steps:
       - uses: actions/checkout@v4

@@ -125,7 +125,18 @@ Tests are managed via `pnpm`. To run the full test suite:
 
 ### Continuous Integration
 
-A GitHub Actions pipeline is configured to automatically run the test suite on every push and pull request. The pipeline tests the configuration across:
+A GitHub Actions pipeline is configured to automatically run the test suite on every push and pull request. **Only the tests related to the files you changed are executed**, keeping CI fast and focused.
+
+| Source changed | Test executed |
+|---|---|
+| `scripts/install/common.sh` | `tests/common.bats` |
+| `scripts/install/features.sh` | `tests/features.bats` |
+| `scripts/install/deps.sh` | `tests/deps.bats` |
+| `scripts/install/config.sh` | `tests/config.bats` |
+| `install.sh` | `tests/install.bats` |
+| Test helpers, `package.json`, or CI config | **All tests** |
+
+The pipeline tests across:
 - **Ubuntu** (Latest)
 - **macOS** (Latest)
 - **Windows** (via **WSL** Ubuntu-22.04)
