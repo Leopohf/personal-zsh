@@ -27,7 +27,7 @@ function git_status_counts() {
   fi
 }
 
-PROMPT="%{$fg[cyan]%}${OS_ICON:-} %c%{$reset_color%}"
+PROMPT="%{$fg[cyan]%}\${OS_ICON:-} %c%{$reset_color%}"
 PROMPT+=' $(git_prompt_info)$(git_status_counts)'
 PROMPT+='$(node_prompt_info)'
 PROMPT+=$'\n'
