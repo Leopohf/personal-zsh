@@ -10,8 +10,10 @@ setup() {
     # Pre-process the theme file: replace zsh associative array syntax
     # ($fg[color], ${fg[color]}, $fg_bold[color]) with plain bracket strings
     # so the file is fully compatible with bash (including bash 3 on macOS).
+    # Also strip \r to handle CRLF line endings on Windows/WSL.
     local tmp_theme="${BATS_TMPDIR}/leonardo.zsh-theme.bash"
     sed -E \
+        -e $'s/\\r$//' \
         -e 's/\$fg\[([a-zA-Z0-9_]+)\]/[\1]/g' \
         -e 's/\$\{fg\[([a-zA-Z0-9_]+)\]\}/[\1]/g' \
         -e 's/\$reset_color/[reset]/g' \

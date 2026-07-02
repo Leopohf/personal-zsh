@@ -3,5 +3,6 @@
 *.bash text eol=lf
 *.bats text eol=lf
 *.zsh text eol=lf
+*.zsh-theme text eol=lf
 zshrc.template text eol=lf
 .zsh_plugins.env text eol=lf
