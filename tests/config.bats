@@ -5,7 +5,17 @@ setup() {
     load 'helpers/mocks'
     setup_mocks
     
-    export REPO_DIR="$BATS_TEST_DIRNAME/.."
+    # Use a mock REPO_DIR so tests never touch real repo files
+    export REPO_DIR="$BATS_TMPDIR/mock_repo"
+    mkdir -p "$REPO_DIR/themes"
+    mkdir -p "$REPO_DIR/scripts/install"
+    
+    # Copy only the files needed by the scripts under test
+    local REAL_REPO="$BATS_TEST_DIRNAME/.."
+    cp "$REAL_REPO/scripts/install/common.sh" "$REPO_DIR/scripts/install/"
+    cp "$REAL_REPO/scripts/install/config.sh" "$REPO_DIR/scripts/install/"
+    mkdir -p "$REPO_DIR/config/core"
+    cp "$REAL_REPO/config/core/00-os.zsh" "$REPO_DIR/config/core/"
     
     # Set up temp directories for isolation
     export HOME="$BATS_TMPDIR/home"
@@ -23,9 +33,11 @@ setup() {
     mock_command "unzip" "mock unzip"
 }
 
+teardown() {
+    rm -rf "$BATS_TMPDIR/mock_repo"
+}
+
 @test "copy_theme should copy the theme file" {
-    # Create a dummy theme file in the repo
-    mkdir -p "$REPO_DIR/themes"
     echo "test theme" > "$REPO_DIR/themes/leonardo.zsh-theme"
     
     run copy_theme

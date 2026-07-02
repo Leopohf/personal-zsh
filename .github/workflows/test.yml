@@ -18,6 +18,7 @@ jobs:
       deps:     ${{ steps.filter.outputs.deps }}
       config:   ${{ steps.filter.outputs.config }}
       install:  ${{ steps.filter.outputs.install }}
+      theme:    ${{ steps.filter.outputs.theme }}
       infra:    ${{ steps.filter.outputs.infra }}
     steps:
       - uses: actions/checkout@v4
@@ -40,6 +41,9 @@ jobs:
             install:
               - 'install.sh'
               - 'tests/install.bats'
+            theme:
+              - 'themes/**'
+              - 'tests/theme.bats'
             infra:
               - 'tests/helpers/**'
               - 'package.json'
@@ -132,26 +136,35 @@ jobs:
       - run: pnpm install
       - run: pnpm exec bats tests/install.bats
 
-  # ── Windows (WSL) — runs ALL tests but only when relevant ──────
-  test-windows:
+  test-theme:
     needs: changes
-    if: |
-      needs.changes.outputs.common == 'true' ||
-      needs.changes.outputs.features == 'true' ||
-      needs.changes.outputs.deps == 'true' ||
-      needs.changes.outputs.config == 'true' ||
-      needs.changes.outputs.install == 'true' ||
-      needs.changes.outputs.infra == 'true'
+    if: ${{ needs.changes.outputs.theme == 'true' || needs.changes.outputs.infra == 'true' }}
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [ubuntu-latest, macos-latest]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: 'pnpm'
+      - run: pnpm install
+      - run: pnpm exec bats tests/theme.bats
+
+  # ── Windows (WSL) — split per test, only when relevant ──────
+  test-windows-common:
+    needs: changes
+    if: ${{ needs.changes.outputs.common == 'true' || needs.changes.outputs.infra == 'true' }}
     runs-on: windows-latest
     steps:
       - uses: actions/checkout@v4
-
       - name: Setup WSL
         uses: Vampire/setup-wsl@v3
         with:
           distribution: Ubuntu-22.04
-
-      - name: Install dependencies in WSL
+      - name: Install dependencies and run tests in WSL
         shell: wsl-bash {0}
         run: |
           sudo apt-get update
@@ -160,8 +173,109 @@ jobs:
           sudo apt-get install -y nodejs
           sudo npm install -g pnpm@10
           pnpm install
+          pnpm exec bats tests/common.bats
 
-      - name: Run tests in WSL
+  test-windows-features:
+    needs: changes
+    if: ${{ needs.changes.outputs.features == 'true' || needs.changes.outputs.infra == 'true' }}
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Setup WSL
+        uses: Vampire/setup-wsl@v3
+        with:
+          distribution: Ubuntu-22.04
+      - name: Install dependencies and run tests in WSL
         shell: wsl-bash {0}
         run: |
-          pnpm test
+          sudo apt-get update
+          sudo apt-get install -y curl git unzip
+          curl -fsSL https://deb.nodesource.com/setup_20.x | sudo -E bash -
+          sudo apt-get install -y nodejs
+          sudo npm install -g pnpm@10
+          pnpm install
+          pnpm exec bats tests/features.bats
+
+  test-windows-deps:
+    needs: changes
+    if: ${{ needs.changes.outputs.deps == 'true' || needs.changes.outputs.infra == 'true' }}
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Setup WSL
+        uses: Vampire/setup-wsl@v3
+        with:
+          distribution: Ubuntu-22.04
+      - name: Install dependencies and run tests in WSL
+        shell: wsl-bash {0}
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y curl git unzip
+          curl -fsSL https://deb.nodesource.com/setup_20.x | sudo -E bash -
+          sudo apt-get install -y nodejs
+          sudo npm install -g pnpm@10
+          pnpm install
+          pnpm exec bats tests/deps.bats
+
+  test-windows-config:
+    needs: changes
+    if: ${{ needs.changes.outputs.config == 'true' || needs.changes.outputs.infra == 'true' }}
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Setup WSL
+        uses: Vampire/setup-wsl@v3
+        with:
+          distribution: Ubuntu-22.04
+      - name: Install dependencies and run tests in WSL
+        shell: wsl-bash {0}
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y curl git unzip
+          curl -fsSL https://deb.nodesource.com/setup_20.x | sudo -E bash -
+          sudo apt-get install -y nodejs
+          sudo npm install -g pnpm@10
+          pnpm install
+          pnpm exec bats tests/config.bats
+
+  test-windows-install:
+    needs: changes
+    if: ${{ needs.changes.outputs.install == 'true' || needs.changes.outputs.infra == 'true' }}
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Setup WSL
+        uses: Vampire/setup-wsl@v3
+        with:
+          distribution: Ubuntu-22.04
+      - name: Install dependencies and run tests in WSL
+        shell: wsl-bash {0}
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y curl git unzip
+          curl -fsSL https://deb.nodesource.com/setup_20.x | sudo -E bash -
+          sudo apt-get install -y nodejs
+          sudo npm install -g pnpm@10
+          pnpm install
+          pnpm exec bats tests/install.bats
+
+  test-windows-theme:
+    needs: changes
+    if: ${{ needs.changes.outputs.theme == 'true' || needs.changes.outputs.infra == 'true' }}
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Setup WSL
+        uses: Vampire/setup-wsl@v3
+        with:
+          distribution: Ubuntu-22.04
+      - name: Install dependencies and run tests in WSL
+        shell: wsl-bash {0}
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y curl git unzip
+          curl -fsSL https://deb.nodesource.com/setup_20.x | sudo -E bash -
+          sudo apt-get install -y nodejs
+          sudo npm install -g pnpm@10
+          pnpm install
+          pnpm exec bats tests/theme.bats
