@@ -8,7 +8,7 @@ This repository contains a portable, modular Zsh configuration based on **Oh My 
 - **Homebrew Integration**: Automatically installs missing CLI tools using Homebrew for a seamless setup.
 - **Modular Structure**: Configuration is split into specialized subdirectories. Only the configurations for selected features are deployed.
 - **Dynamic Plugin Management**: Automatically generates the Oh My Zsh plugin list based on your preferences.
-- **Custom Theme**: `leonardo.zsh-theme` (Customized robbyrussell with dynamic OS icons).
+- **Custom Theme**: `leonardo.zsh-theme` (Customized robbyrussell with dynamic OS icons and inline git diff stats — yellow file document icon `󰈙` and yellow line number icon ``).
 - **Java Management**: Integrated [SDKMAN!](https://sdkman.io/) with automatic version switching.
 - **Utility Tools**: Includes handy utilities like **Extract** (one command to unzip anything) and **Warp Directory (wd)** for quick navigation.
 
