@@ -44,3 +44,30 @@ setup() {
     assert_success
     assert_output --partial "Checking/Installing dependencies with Homebrew"
 }
+
+@test "install_git_lfs should skip if ENABLE_GIT_LFS is not true" {
+    export ENABLE_GIT_LFS=false
+    run install_git_lfs
+    assert_success
+    refute_output --partial "Initializing Git LFS"
+}
+
+@test "install_git_lfs should initialize if ENABLE_GIT_LFS is true and git-lfs command exists" {
+    export ENABLE_GIT_LFS=true
+    mock_command "git-lfs" "mock git-lfs"
+    mock_command "git" "mock git"
+    
+    run install_git_lfs
+    assert_success
+    assert_output --partial "Initializing Git LFS"
+}
+
+@test "install_git_lfs should report failure if ENABLE_GIT_LFS is true but git-lfs command is missing" {
+    export ENABLE_GIT_LFS=true
+    rm -f "$MOCK_BIN_DIR/git-lfs"
+    export PATH="$MOCK_BIN_DIR:/usr/bin:/bin"
+    run install_git_lfs
+    assert_success
+    assert_output --partial "git-lfs command not found"
+}
+

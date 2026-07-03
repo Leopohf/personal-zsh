@@ -38,6 +38,7 @@ else
     install_sdkman
     install_bun
     install_angular
+    install_git_lfs
 
     # 4. Configuration Phase
     copy_theme

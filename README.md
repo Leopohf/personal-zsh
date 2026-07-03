@@ -3,7 +3,7 @@
 This repository contains a portable, modular Zsh configuration based on **Oh My Zsh** and the **Powerlevel10k**-inspired custom theme `leonardo`.
 
 ## Features
-- **Granular Installation**: Choose exactly which tools and plugins to install (Git, GitHub CLI, Node, pnpm, Bun, Docker, AWS, Azure, Angular, Go, Maven, etc.) independently via an interactive menu.
+- **Granular Installation**: Choose exactly which tools and plugins to install (Git, Git LFS, GitHub CLI, Node, pnpm, Bun, Docker, AWS, Azure, Angular, Go, Maven, etc.) independently via an interactive menu.
 - **Enhanced Terminal Experience**: Includes pre-configured support for **Zsh Autosuggestions**, **Syntax Highlighting**, and **Fzf** (Fuzzy Finder).
 - **Homebrew Integration**: Automatically installs missing CLI tools using Homebrew for a seamless setup.
 - **Modular Structure**: Configuration is split into specialized subdirectories. Only the configurations for selected features are deployed.
@@ -66,6 +66,7 @@ Your selected features are stored in `.zsh_plugins.env`. You can manually edit t
 Example `.zsh_plugins.env`:
 ```bash
 ENABLE_GH=true
+ENABLE_GIT_LFS=true
 ENABLE_FNM=true
 ENABLE_PNPM=true
 ENABLE_NG=true

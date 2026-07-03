@@ -171,3 +171,20 @@ install_angular() {
         fi
     fi
 }
+
+install_git_lfs() {
+    if [ "$ENABLE_GIT_LFS" = true ]; then
+        if command -v git-lfs &> /dev/null; then
+            echo "📦 Initializing Git LFS..."
+            if git lfs install; then
+                SUMMARY_SUCCESS+=("Git LFS (initialized)")
+            else
+                SUMMARY_FAILED+=("Git LFS (initialization failed)")
+            fi
+        else
+            log_warn "git-lfs command not found, cannot initialize."
+            SUMMARY_FAILED+=("Git LFS (not found)")
+        fi
+    fi
+}
+

@@ -9,6 +9,7 @@ setup() {
     mock_system_commands
     
     export REPO_DIR="$BATS_TEST_DIRNAME/.."
+    export PLUGINS_CONF="$BATS_TMPDIR/.zsh_plugins.env"
 }
 
 @test "install.sh with --dry-run should succeed and report dry run" {
@@ -23,6 +24,7 @@ setup() {
     export ENABLE_PNPM=false
     export ENABLE_BUN=false
     export ENABLE_DOCKER=false
+    export ENABLE_DOCKER_COMPOSE=false
     export ENABLE_SDKMAN=false
     export ENABLE_MAVEN=false
     export ENABLE_AWS=false
@@ -32,6 +34,7 @@ setup() {
     export ENABLE_FZF=false
     export ENABLE_EXTRACT=false
     export ENABLE_WD=false
+    export ENABLE_GIT_LFS=false
 
     run ./install.sh --dry-run
     assert_success

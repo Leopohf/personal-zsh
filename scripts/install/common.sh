@@ -3,7 +3,7 @@
 # Shared environment variables for the installer
 ZSH_CUSTOM="${ZSH_CUSTOM:-$HOME/.oh-my-zsh/custom}"
 CONFIG_DEST="$HOME/.zsh_config"
-PLUGINS_CONF="$REPO_DIR/.zsh_plugins.env"
+PLUGINS_CONF="${PLUGINS_CONF:-$REPO_DIR/.zsh_plugins.env}"
 
 # Global state
 SELECTED_OMZ_PLUGINS="history git"

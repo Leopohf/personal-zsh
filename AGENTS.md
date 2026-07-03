@@ -6,11 +6,12 @@ This file provides core context and guidelines for AI agents (Gemini, Claude, et
 - **Purpose**: Portable, modular Zsh configuration for Linux, macOS, and WSL.
 - **Base**: Oh My Zsh.
 - **Custom Theme**: `leonardo.zsh-theme` (requires `OS_ICON` env var; includes git stats with yellow document icon `󰈙` and yellow lines icon ``).
-- **Package Managers**: 
+- **Package Managers & Tools**: 
     - **SDKMAN!** (`config/sdkman.zsh`): Java version management.
     - **FNM** (`config/fnm.zsh`): Fast Node Manager.
     - **Bun** (`config/bun.zsh`): JavaScript runtime and manager.
     - **Homebrew** (`config/brew.zsh`): Package manager for macOS and Linux.
+    - **Git LFS** (`config/plugins/git-lfs.zsh`): Git Large File Storage configuration and aliases.
 
 ## Key Workflows
 

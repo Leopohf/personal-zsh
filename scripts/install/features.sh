@@ -71,6 +71,7 @@ select_features() {
 
     # Tools
     confirm_feature "GH" "GitHub CLI (gh)" && { SELECTED_OMZ_PLUGINS="$SELECTED_OMZ_PLUGINS gh"; BREW_DEPS="$BREW_DEPS gh"; }
+    confirm_feature "GIT_LFS" "Git LFS" && { SELECTED_CONFIG_FILES="$SELECTED_CONFIG_FILES git-lfs.zsh"; BREW_DEPS="$BREW_DEPS git-lfs"; }
     confirm_feature "FNM" "Node Manager (fnm)" && { SELECTED_OMZ_PLUGINS="$SELECTED_OMZ_PLUGINS fnm"; SELECTED_CONFIG_FILES="$SELECTED_CONFIG_FILES fnm.zsh"; BREW_DEPS="$BREW_DEPS fnm"; }
     confirm_feature "PNPM" "Package Manager (pnpm)" && { SELECTED_CONFIG_FILES="$SELECTED_CONFIG_FILES pnpm.zsh"; BREW_DEPS="$BREW_DEPS pnpm"; }
     confirm_feature "BUN" "Bun Runtime" && { SELECTED_CONFIG_FILES="$SELECTED_CONFIG_FILES bun.zsh"; }
