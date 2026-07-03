@@ -64,8 +64,14 @@ setup() {
 
 @test "install_git_lfs should report failure if ENABLE_GIT_LFS is true but git-lfs command is missing" {
     export ENABLE_GIT_LFS=true
-    rm -f "$MOCK_BIN_DIR/git-lfs"
-    export PATH="$MOCK_BIN_DIR:/usr/bin:/bin"
+    
+    command() {
+        if [ "$1" = "-v" ] && [ "$2" = "git-lfs" ]; then
+            return 1
+        fi
+        builtin command "$@"
+    }
+    
     run install_git_lfs
     assert_success
     assert_output --partial "git-lfs command not found"
