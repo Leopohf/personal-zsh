@@ -24,7 +24,7 @@ Some features have mandatory dependencies for security or functional reasons:
 This configuration includes a dedicated module for managing Java versions via SDKMAN!.
 
 ### Features:
-- **Auto-Install**: The `install.sh` script automatically installs SDKMAN! if it's not present.
+- **Auto-Install**: The `install.sh` script automatically installs SDKMAN! and Java 21 (Temurin) if not present.
 - **Auto-Env**: Configured by default to switch Java versions automatically when entering a directory with a `.sdkmanrc` file.
 - **Helper Function**: Use `jv` as a shortcut for Java version management.
 

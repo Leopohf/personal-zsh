@@ -41,6 +41,7 @@ This file provides core context and guidelines for AI agents (Gemini, Claude, et
 
 ### Java (SDKMAN!)
 - Use the `jv` helper function for version switching.
+- Auto-installs Java 21 (`21-tem`) upon SDKMAN! installation.
 - Use `.sdkmanrc` for project-specific versions.
 
 ### Theming

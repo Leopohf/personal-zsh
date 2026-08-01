@@ -95,16 +95,48 @@ install_sdkman() {
         if curl -s "https://get.sdkman.io" | "$bash_bin"; then
             if [[ "$OSTYPE" == "darwin"* ]]; then
                 sed -i '' 's/sdkman_auto_env=false/sdkman_auto_env=true/g' "$HOME/.sdkman/etc/config" 2>/dev/null
+                sed -i '' 's/sdkman_auto_answer=false/sdkman_auto_answer=true/g' "$HOME/.sdkman/etc/config" 2>/dev/null
             else
                 sed -i 's/sdkman_auto_env=false/sdkman_auto_env=true/g' "$HOME/.sdkman/etc/config" 2>/dev/null
+                sed -i 's/sdkman_auto_answer=false/sdkman_auto_answer=true/g' "$HOME/.sdkman/etc/config" 2>/dev/null
             fi
             SUMMARY_SUCCESS+=("SDKMAN!")
         else
             SUMMARY_FAILED+=("SDKMAN! (installation failed)")
+            return
         fi
     elif [ "$INSTALL_SDKMAN" = true ]; then
         log_info "SDKMAN! is already installed."
         SUMMARY_SUCCESS+=("SDKMAN!")
+    fi
+
+    if [ "$INSTALL_SDKMAN" = true ]; then
+        export SDKMAN_DIR="$HOME/.sdkman"
+        if [ -s "$SDKMAN_DIR/bin/sdkman-init.sh" ]; then
+            source "$SDKMAN_DIR/bin/sdkman-init.sh"
+
+            # Enable non-interactive auto answer if config exists
+            if [ -f "$SDKMAN_DIR/etc/config" ]; then
+                if [[ "$OSTYPE" == "darwin"* ]]; then
+                    sed -i '' 's/sdkman_auto_answer=false/sdkman_auto_answer=true/g' "$SDKMAN_DIR/etc/config" 2>/dev/null
+                else
+                    sed -i 's/sdkman_auto_answer=false/sdkman_auto_answer=true/g' "$SDKMAN_DIR/etc/config" 2>/dev/null
+                fi
+            fi
+
+            # Check if Java 21 is installed
+            if [ ! -d "$SDKMAN_DIR/candidates/java/21-tem" ] && ! ls -d "$SDKMAN_DIR/candidates/java/21"* &>/dev/null; then
+                echo "📦 Installing Java 21 (Temurin) via SDKMAN!..."
+                if sdk install java 21-tem; then
+                    SUMMARY_SUCCESS+=("Java 21 (SDKMAN!)")
+                else
+                    SUMMARY_FAILED+=("Java 21 (SDKMAN! install failed)")
+                fi
+            else
+                log_info "Java 21 is already available via SDKMAN!."
+                SUMMARY_SUCCESS+=("Java 21 (SDKMAN!)")
+            fi
+        fi
     fi
 }
 
