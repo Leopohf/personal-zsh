@@ -13,13 +13,14 @@ jobs:
     permissions:
       pull-requests: read
     outputs:
-      common:   ${{ steps.filter.outputs.common }}
-      features: ${{ steps.filter.outputs.features }}
-      deps:     ${{ steps.filter.outputs.deps }}
-      config:   ${{ steps.filter.outputs.config }}
-      install:  ${{ steps.filter.outputs.install }}
-      theme:    ${{ steps.filter.outputs.theme }}
-      infra:    ${{ steps.filter.outputs.infra }}
+      common:       ${{ steps.filter.outputs.common }}
+      features:     ${{ steps.filter.outputs.features }}
+      deps:         ${{ steps.filter.outputs.deps }}
+      config:       ${{ steps.filter.outputs.config }}
+      install:      ${{ steps.filter.outputs.install }}
+      theme:        ${{ steps.filter.outputs.theme }}
+      migrate_path: ${{ steps.filter.outputs.migrate_path }}
+      infra:        ${{ steps.filter.outputs.infra }}
     steps:
       - uses: actions/checkout@v4
       - uses: dorny/paths-filter@v3
@@ -44,6 +45,9 @@ jobs:
             theme:
               - 'themes/**'
               - 'tests/theme.bats'
+            migrate_path:
+              - 'scripts/migrate_path.sh'
+              - 'tests/migrate_path.bats'
             infra:
               - 'tests/helpers/**'
               - 'package.json'
@@ -152,6 +156,23 @@ jobs:
           cache: 'pnpm'
       - run: pnpm install
       - run: pnpm exec bats tests/theme.bats
+
+  test-migrate-path:
+    needs: changes
+    if: ${{ needs.changes.outputs.migrate_path == 'true' || needs.changes.outputs.infra == 'true' }}
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [ubuntu-latest, macos-latest]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: 'pnpm'
+      - run: pnpm install
+      - run: pnpm exec bats tests/migrate_path.bats
 
   # ── Windows (WSL) — split per test, only when relevant ──────
   test-windows-common:
@@ -279,3 +300,24 @@ jobs:
           sudo npm install -g pnpm@10
           pnpm install
           pnpm exec bats tests/theme.bats
+
+  test-windows-migrate-path:
+    needs: changes
+    if: ${{ needs.changes.outputs.migrate_path == 'true' || needs.changes.outputs.infra == 'true' }}
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Setup WSL
+        uses: Vampire/setup-wsl@v3
+        with:
+          distribution: Ubuntu-22.04
+      - name: Install dependencies and run tests in WSL
+        shell: wsl-bash {0}
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y curl git unzip
+          curl -fsSL https://deb.nodesource.com/setup_20.x | sudo -E bash -
+          sudo apt-get install -y nodejs
+          sudo npm install -g pnpm@10
+          pnpm install
+          pnpm exec bats tests/migrate_path.bats

@@ -112,3 +112,5 @@ fi
 
 # User specific configuration (if any remains)
 [[ -f ~/.zshrc.local ]] && source ~/.zshrc.local
+
+# Backups of previous configurations are stored in ~/.zsh_config/backups/

@@ -135,6 +135,7 @@ A GitHub Actions pipeline is configured to automatically run the test suite on e
 | `scripts/install/deps.sh` | `tests/deps.bats` |
 | `scripts/install/config.sh` | `tests/config.bats` |
 | `install.sh` | `tests/install.bats` |
+| `scripts/migrate_path.sh` | `tests/migrate_path.bats` |
 | Test helpers, `package.json`, or CI config | **All tests** |
 
 The pipeline tests across:
@@ -146,10 +147,33 @@ The pipeline tests across:
 - `zshrc.template`: The main entry point copied to `~/.zshrc`.
 - `install.sh`: Main entry point for the installation process.
 - `scripts/install/`: Modular installation scripts (features, dependencies, configuration).
+- `scripts/migrate_path.sh`: Utility to move PATH definitions from `~/.zshrc` to `~/.zshenv`.
 - `config/`: 
     - `core/`: Base system configurations (OS detection, history, aliases).
     - `plugins/`: Tool-specific and functional configurations (Brew, Docker, SDKMAN, etc.).
 - `themes/`: Custom Zsh themes copied to Oh My Zsh custom themes folder.
+
+## Utilities
+
+### PATH Migration (`scripts/migrate_path.sh`)
+
+Moves explicit, single-line `PATH` definitions from `~/.zshrc` to `~/.zshenv`, where they belong (`.zshenv` is loaded in **every** zsh session, including non-interactive ones like cron, launchd, and GUI apps).
+
+```bash
+# Preview what would be moved (safe, no changes)
+./scripts/migrate_path.sh
+
+# Actually move the lines and create backups
+./scripts/migrate_path.sh --apply
+```
+
+The script:
+- **Dry-runs by default** — shows detected lines without touching any file.
+- **Creates timestamped backups** in `~/.zsh_config/backups/` before modifying anything.
+- **Appends a comment note** at the end of `~/.zshrc` pointing to the backup location.
+- **Skips lines inside conditionals**, functions, multiline arrays, and comments.
+- **Appends `typeset -U path`** to the migrated block for automatic deduplication.
+- **Works on both macOS and Linux** (uses `awk`, not `sed -i`).
 
 ## Nerd Font Symbols
 

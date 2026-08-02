@@ -24,6 +24,15 @@ This file provides core context and guidelines for AI agents (Gemini, Claude, et
     - `config.sh`: Deployment of themes, configs, and fonts.
 - **Preferences**: Persists preferences in `.zsh_plugins.env`.
 
+### PATH Migration
+- **Script**: `scripts/migrate_path.sh` — moves explicit, single-line `PATH` definitions from `~/.zshrc` to `~/.zshenv`.
+- **Automatic Execution**: Sourced automatically on shell startup via `config/core/path_migrate.zsh`. If new `PATH` definitions are added to `~/.zshrc`, reloading `~/.zshrc` auto-migrates them quietly and re-sources `~/.zshenv`.
+- **Rationale**: `.zshenv` is loaded in every zsh session (interactive, non-interactive, cron, launchd, GUI apps), making it the correct place for `PATH`.
+- **Dry-run by default**: Running without flags shows detected lines without modifying anything. Use `--apply` to execute.
+- **Stateful parser**: Tracks `if`/`for`/`while`/`case` block depth and `{ }` brace depth to skip lines inside conditionals and functions.
+- **Portability**: Uses `awk` (not `sed -i`) for line deletion to work on both macOS (BSD) and Linux (GNU).
+- **Test harness**: `tests/migrate_path.bats` validates the script via Bats (39 tests covering dry-run, apply, exclusion rules, backups, idempotency, and edge cases).
+
 ### Modular Configuration
 - **Structure**: The `config/` directory is organized into subdirectories:
     - **`config/core/`**: Essential system configurations (always installed).
